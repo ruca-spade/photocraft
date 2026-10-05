@@ -90,6 +90,8 @@ pub fn tool_icon(t: Tool) -> &'static str {
 
 /// Square icon button: transparent until hovered; `selected` gets the accent treatment.
 pub fn button(ui: &mut egui::Ui, name: &str, box_size: f32, selected: bool, tooltip: &str) -> Response {
+    let tooltip_tr = crate::i18n::ts(tooltip);
+    let tooltip = tooltip_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let (rect, resp) = ui.allocate_exact_size(Vec2::splat(box_size), Sense::click());
     let hovered = resp.hovered();
@@ -112,6 +114,8 @@ pub fn button(ui: &mut egui::Ui, name: &str, box_size: f32, selected: bool, tool
 
 /// Rail toggle: "on" gets a quiet filled background and full-strength icon (no accent).
 pub fn rail_button(ui: &mut egui::Ui, name: &str, box_size: f32, on: bool, tooltip: &str) -> Response {
+    let tooltip_tr = crate::i18n::ts(tooltip);
+    let tooltip = tooltip_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let (rect, resp) = ui.allocate_exact_size(Vec2::splat(box_size), Sense::click());
     if on {

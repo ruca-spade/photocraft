@@ -107,10 +107,10 @@ fn profile_name(doc: &Document) -> String {
 pub fn status_bar_pro(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     let t = Tokens::get(ui.ctx());
     let (Some(st), Some(i)) = (app.session.active(), app.session.active_index()) else {
-        ui.label(RichText::new("No document").color(t.text_dim));
+        ui.label(RichText::new(crate::i18n::ts("No document")).color(t.text_dim));
         return;
     };
-    let text = status_info_text(&st.doc, &app.ui.chrome.status_info, app.ui.tool.label(), &profile_name(&st.doc));
+    let text = status_info_text(&st.doc, &app.ui.chrome.status_info, &crate::i18n::ts(app.ui.tool.label()), &profile_name(&st.doc));
     let mut pct = app.ui.views[i].zoom * 100.0;
     if widgets::value_field(ui, &mut pct, 1.0..=3200.0, "%", 64.0).changed() {
         app.ui.views[i].zoom = pct / 100.0;
@@ -123,7 +123,7 @@ pub fn status_bar_pro(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
         ui.painter().rect_filled(r, t.radius_sm, t.hover);
     }
     icons::paint(ui, r, "chevron-right", 11.0, t.text_dim);
-    let resp = resp.on_hover_text("Show");
+    let resp = resp.on_hover_text(crate::i18n::ts("Show"));
     egui::Popup::menu(&resp).show(|ui| {
         ui.set_min_width(200.0);
         for (key, label) in STATUS_INFO {

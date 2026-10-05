@@ -54,7 +54,7 @@ pub fn windows(app: &mut PhotocraftApp, ctx: &egui::Context) {
 
     crate::analysis_ui::panel_window(app, ctx, "timeline", "Timeline", vec2(0.0, 520.0), 660.0, |ui| {
         ui.horizontal(|ui| {
-            ui.label(RichText::new("Timeline").strong().color(t.text));
+            ui.label(RichText::new(crate::i18n::ts("Timeline")).strong().color(t.text));
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 if crate::icons::button(ui, "x", 20.0, false, "Close").clicked() {
                     close = true;
@@ -64,7 +64,7 @@ pub fn windows(app: &mut PhotocraftApp, ctx: &egui::Context) {
         ui.separator();
 
         if !have_doc {
-            ui.weak("Open a document to use the timeline.");
+            ui.weak(crate::i18n::ts("Open a document to use the timeline."));
             return;
         }
         match &tl {
@@ -75,7 +75,7 @@ pub fn windows(app: &mut PhotocraftApp, ctx: &egui::Context) {
                         act = Some(("timeline.create", json!({ "duration": 30, "fps": 30.0 })));
                     }
                     ui.add_space(4.0);
-                    ui.weak("30 frames @ 30 fps");
+                    ui.weak(crate::i18n::ts("30 frames @ 30 fps"));
                 });
             }
             Some(tl) => {

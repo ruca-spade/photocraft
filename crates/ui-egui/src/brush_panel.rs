@@ -177,7 +177,7 @@ fn brushes_tab(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     let before = app.session.tools.brush.clone();
     let mut b = before.clone();
     ui.horizontal(|ui| {
-        ui.label(RichText::new("Size").color(t.text_dim));
+        ui.label(RichText::new(crate::i18n::ts("Size")).color(t.text_dim));
         let mut lv = b.size.max(1.0).ln();
         ui.add_sized(vec2(WIDTH - 140.0, 18.0), |ui: &mut egui::Ui| {
             let r = widgets::slider(ui, &mut lv, 0.0..=5000f32.ln(), None);
@@ -196,7 +196,7 @@ fn brushes_tab(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     ui.horizontal(|ui| {
         icons::paint(ui, egui::Rect::from_min_size(ui.cursor().min + vec2(0.0, 3.0), vec2(16.0, 16.0)), "search", 14.0, t.text_faint);
         ui.add_space(20.0);
-        ui.add(egui::TextEdit::singleline(&mut app.ui.brushes_panel.filter).hint_text("Search Brushes").desired_width(WIDTH - 60.0));
+        ui.add(egui::TextEdit::singleline(&mut app.ui.brushes_panel.filter).hint_text(crate::i18n::ts("Search Brushes")).desired_width(WIDTH - 60.0));
     });
     ui.add_space(6.0);
     let filter = app.ui.brushes_panel.filter.trim().to_lowercase();

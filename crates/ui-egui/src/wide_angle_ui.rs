@@ -142,6 +142,8 @@ pub fn open(app: &mut PhotocraftApp, ctx: &egui::Context) -> Result<(), String> 
 }
 
 fn parse_orientation(s: &str) -> Orientation {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     match s {
         "horizontal" => Orientation::Horizontal,
         "vertical" => Orientation::Vertical,
@@ -381,7 +383,7 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
             widgets::hairline(ui);
             widgets::checkbox(ui, &mut d.preview, "Preview");
             ui.label(
-                egui::RichText::new("Drag on the image to add a constraint; Shift for horizontal/vertical; right-click to delete.")
+                egui::RichText::new(crate::i18n::ts("Drag on the image to add a constraint; Shift for horizontal/vertical; right-click to delete."))
                     .color(t.text_faint)
                     .size(11.0),
             );

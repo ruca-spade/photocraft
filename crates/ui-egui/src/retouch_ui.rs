@@ -116,11 +116,15 @@ pub fn draw_source_marker(app: &PhotocraftApp, painter: &egui::Painter, xf: &Vie
 }
 
 fn opt(ui: &mut egui::Ui, text: &str) {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.label(egui::RichText::new(text).color(t.text_dim).size(12.0));
 }
 
 fn pct(ui: &mut egui::Ui, label: &str, v: &mut f32) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     opt(ui, label);
     crate::widgets::value_field(ui, v, 1.0..=100.0, "%", 58.0);
 }

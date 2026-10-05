@@ -103,7 +103,7 @@ pub fn toolbar(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
                             slot_index += 1;
                             let tool = slot_tool(ui, app.ui.tool, slot, key);
                             let sel = slot.contains(&app.ui.tool);
-                            let tip = if tool.key() == '\0' { tool.label().to_string() } else { format!("{}  ({})", tool.label(), tool.key()) };
+                            let tip = if tool.key() == '\0' { crate::i18n::ts(tool.label()) } else { format!("{}  ({})", crate::i18n::ts(tool.label()), tool.key()) };
                             let resp = icons::button(ui, icons::tool_icon(tool), bx, sel, &tip);
                             if slot.len() > 1 {
                                 let r = resp.rect;
@@ -133,7 +133,7 @@ pub fn toolbar(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
                                             let label_w = slot
                                                 .iter()
                                                 .map(|it| {
-                                                    ui.painter().layout_no_wrap(it.label().to_string(), egui::FontId::proportional(12.5), t.text).size().x
+                                                    ui.painter().layout_no_wrap(crate::i18n::ts(it.label()), egui::FontId::proportional(12.5), t.text).size().x
                                                 })
                                                 .fold(0.0f32, f32::max);
                                             let fw = (label_w + 42.0 + 40.0).max(180.0);
@@ -159,7 +159,7 @@ pub fn toolbar(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
                                                 ui.painter().text(
                                                     pos2(r.left() + 42.0, r.center().y),
                                                     Align2::LEFT_CENTER,
-                                                    item.label(),
+                                                    crate::i18n::ts(item.label()),
                                                     egui::FontId::proportional(12.5),
                                                     t.text,
                                                 );
@@ -257,9 +257,9 @@ fn color_chips(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     // Photoshop: clicking a chip opens the Color Picker for that colour.
     let bg_resp = ui.interact(bg, ui.id().with("bgchip"), Sense::click());
     let fg_resp = ui.interact(fg, ui.id().with("fgchip"), Sense::click());
-    if fg_resp.on_hover_text("Set foreground color").clicked() {
+    if fg_resp.on_hover_text(crate::i18n::ts("Set foreground color")).clicked() {
         crate::color_picker_ui::open(app, "foreground");
-    } else if bg_resp.on_hover_text("Set background color").clicked() {
+    } else if bg_resp.on_hover_text(crate::i18n::ts("Set background color")).clicked() {
         crate::color_picker_ui::open(app, "background");
     }
     ui.horizontal(|ui| {
@@ -319,7 +319,7 @@ pub fn title_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
                     // Always one click away: the community Discord.
                     let discord = egui::Button::image_and_text(
                         icons::image("message-square", 14.0, t.text_dim),
-                        egui::RichText::new("Discord").color(t.text_dim).size(12.0),
+                        egui::RichText::new(crate::i18n::ts("Discord")).color(t.text_dim).size(12.0),
                     )
                     .frame(false);
                     if ui.add(discord).on_hover_text(format!("Join the ArtCraft Discord ({})", crate::links::DISCORD)).clicked() {
@@ -346,7 +346,7 @@ pub fn options_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
                     crate::chrome_ui::home_button(app, ui);
                     widgets::vline(ui, 22.0);
                 }
-                let _ = icons::button(ui, icons::tool_icon(app.ui.tool), if t.pro { 26.0 } else { 28.0 }, !t.pro, app.ui.tool.label());
+                let _ = icons::button(ui, icons::tool_icon(app.ui.tool), if t.pro { 26.0 } else { 28.0 }, !t.pro, &crate::i18n::ts(app.ui.tool.label()));
                 if t.pro {
                     let (r, _) = ui.allocate_exact_size(vec2(10.0, 20.0), Sense::hover());
                     icons::paint(ui, r, "chevron-down", 10.0, t.text_faint);
@@ -642,18 +642,24 @@ pub fn options_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
 }
 
 fn label(ui: &mut egui::Ui, s: &str) {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.label(RichText::new(s).color(t.text_dim));
 }
 
 /// Options-bar label: Photoshop writes "Size:" with a colon.
 fn opt_label(ui: &mut egui::Ui, s: &str) {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let text = if t.pro && !s.ends_with(':') { format!("{s}:") } else { s.to_string() };
     ui.label(RichText::new(text).color(t.text_dim));
 }
 
 fn hint(ui: &mut egui::Ui, s: &str) {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.label(RichText::new(s).color(t.text_faint));
 }
@@ -935,6 +941,8 @@ fn navigator(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
 }
 
 fn empty(ui: &mut egui::Ui, s: &str) {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.add_space(6.0);
     ui.label(RichText::new(s).color(t.text_faint));
@@ -1009,7 +1017,7 @@ fn swatches(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
         }
     }
     ui.add_space(2.0);
-    ui.label(RichText::new("Click sets foreground · right-click sets background").small().color(t.text_faint));
+    ui.label(RichText::new(crate::i18n::ts("Click sets foreground · right-click sets background")).small().color(t.text_faint));
 }
 
 fn color_picker(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
@@ -1065,7 +1073,7 @@ fn layers(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
             ui.painter().rect_filled(r, t.radius_sm, t.field);
             ui.painter().rect_stroke(r, t.radius_sm, Stroke::new(1.0, t.field_border), StrokeKind::Inside);
             icons::paint(ui, Rect::from_center_size(r.left_center() + vec2(11.0, 0.0), vec2(14.0, 14.0)), "search", 11.0, t.text_faint);
-            ui.painter().text(r.left_center() + vec2(22.0, 0.0), Align2::LEFT_CENTER, "Kind", egui::FontId::proportional(11.5), t.text_dim);
+            ui.painter().text(r.left_center() + vec2(22.0, 0.0), Align2::LEFT_CENTER, crate::i18n::ts("Kind"), egui::FontId::proportional(11.5), t.text_dim);
             ui.add_space(4.0);
             for (kind, icon, tip) in [
                 ("pixel", "image", "Filter for pixel layers"),
@@ -1205,17 +1213,17 @@ fn layers(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
             egui::Popup::menu(&adj).show(|ui| {
                 ui.set_min_width(190.0);
                 for c in photocraft_engine::command_specs().iter().filter(|c| c.id.starts_with("layer.newAdjustmentLayer.")) {
-                    if ui.button(c.label.trim_end_matches('…')).clicked() {
+                    if ui.button(crate::i18n::ts(c.label).trim_end_matches('…')).clicked() {
                         actions.push((c.id.into(), json!({})));
                         ui.close();
                     }
                 }
                 ui.separator();
-                if ui.button("Solid Color…").clicked() {
+                if ui.button(crate::i18n::ts("Solid Color…")).clicked() {
                     actions.push(("layer.newFillLayer.solidColor".into(), json!({})));
                     ui.close();
                 }
-                if ui.button("Gradient…").clicked() {
+                if ui.button(crate::i18n::ts("Gradient…")).clicked() {
                     actions.push(("layer.newFillLayer.gradient".into(), json!({})));
                     ui.close();
                 }
@@ -1227,13 +1235,13 @@ fn layers(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
             let fx = fx_button(ui, 26.0, "Add a layer style");
             egui::Popup::menu(&fx).show(|ui| {
                 ui.set_min_width(180.0);
-                if ui.button("Blending Options…").clicked() {
+                if ui.button(crate::i18n::ts("Blending Options…")).clicked() {
                     crate::layer_style::open(app, None);
                     ui.close();
                 }
                 ui.separator();
                 for &(kind, label) in crate::layer_style::KINDS {
-                    if ui.button(format!("{label}…")).clicked() {
+                    if ui.button(format!("{}…", crate::i18n::ts(label))).clicked() {
                         crate::layer_style::open(app, Some(kind));
                         ui.close();
                     }
@@ -1266,6 +1274,8 @@ fn layers(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
 
 /// Photoshop's italic "fx" footer button (no icon-font equivalent).
 fn fx_button(ui: &mut egui::Ui, size: f32, tip: &str) -> egui::Response {
+    let tip_tr = crate::i18n::ts(tip);
+    let tip = tip_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let (r, resp) = ui.allocate_exact_size(vec2(size, size), Sense::click());
     if resp.hovered() {
@@ -1638,7 +1648,7 @@ pub fn properties_window(app: &mut PhotocraftApp, ctx: &egui::Context) {
         frame.show(ui, |ui| {
             ui.set_width(width - 28.0);
             let title = ui.horizontal(|ui| {
-                ui.label(RichText::new("Properties").font(theme::semibold(13.5)).color(t.text));
+                ui.label(RichText::new(crate::i18n::ts("Properties")).font(theme::semibold(13.5)).color(t.text));
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     if icons::button(ui, "minus", 22.0, false, "Hide Properties").clicked() {
                         app.ui.panels.properties = false;
@@ -1795,7 +1805,7 @@ fn properties_body(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
 /// Photoshop's Adjustments panel: a grid of one-click adjustment layers.
 fn adjustments_grid(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     let t = Tokens::get(ui.ctx());
-    ui.label(RichText::new("Add an adjustment").color(t.text_dim));
+    ui.label(RichText::new(crate::i18n::ts("Add an adjustment")).color(t.text_dim));
     ui.add_space(4.0);
     let items: [(&str, &str, &str); 16] = [
         ("brightnessContrast", "sun", "Brightness/Contrast"),
@@ -1968,7 +1978,7 @@ fn brush_preset_chip(ui: &mut egui::Ui, b: &mut photocraft_engine::BrushSettings
     brush_tip(ui.painter(), c, 7.0, b.hardness, Color32::WHITE);
     ui.painter().text(pos2(c.x, r.bottom() - 5.0), Align2::CENTER_CENTER, format!("{}", b.size.round() as i64), egui::FontId::proportional(9.5), t.text_dim);
     icons::paint(ui, Rect::from_center_size(pos2(r.right() - 9.0, c.y), vec2(10.0, 10.0)), "chevron-down", 9.0, t.text_faint);
-    let resp = resp.on_hover_text("Brush Preset picker");
+    let resp = resp.on_hover_text(crate::i18n::ts("Brush Preset picker"));
     egui::Popup::from_toggle_button_response(&resp).close_behavior(egui::PopupCloseBehavior::CloseOnClickOutside).show(|ui| brush_picker_body(ui, b));
 }
 
@@ -1979,7 +1989,7 @@ pub(crate) fn brush_picker_body(ui: &mut egui::Ui, b: &mut photocraft_engine::Br
     ui.set_width(260.0);
     // Size: value field plus a logarithmic slider (small sizes get most of the travel).
     ui.horizontal(|ui| {
-        ui.label(RichText::new("Size").color(t.text_dim));
+        ui.label(RichText::new(crate::i18n::ts("Size")).color(t.text_dim));
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             let mut size = b.size;
             if widgets::value_field(ui, &mut size, 1.0..=5000.0, "px", 72.0).changed() {
@@ -1998,7 +2008,7 @@ pub(crate) fn brush_picker_body(ui: &mut egui::Ui, b: &mut photocraft_engine::Br
     ui.add_space(6.0);
     widgets::hairline(ui);
     ui.add_space(6.0);
-    ui.label(RichText::new("General Brushes").color(t.text_dim).size(11.5));
+    ui.label(RichText::new(crate::i18n::ts("General Brushes")).color(t.text_dim).size(11.5));
     // Photoshop's default round presets: soft and hard at common sizes.
     let presets: [(f32, f32); 12] =
         [(1.0, 1.0), (3.0, 1.0), (5.0, 1.0), (9.0, 1.0), (13.0, 1.0), (19.0, 1.0), (5.0, 0.0), (9.0, 0.0), (13.0, 0.0), (17.0, 0.0), (45.0, 0.0), (65.0, 0.0)];
@@ -2159,7 +2169,7 @@ fn gradient_swatch(ui: &mut egui::Ui, a: [f32; 4], b: [f32; 4]) {
     mesh.add_triangle(0, 2, 3);
     ui.painter().add(mesh);
     ui.painter().rect_stroke(r, 0.0, Stroke::new(1.0, t.field_border), StrokeKind::Outside);
-    let _ = resp.on_hover_text("Click to edit the gradient");
+    let _ = resp.on_hover_text(crate::i18n::ts("Click to edit the gradient"));
 }
 
 #[cfg(test)]

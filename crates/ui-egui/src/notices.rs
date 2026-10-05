@@ -78,7 +78,7 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                             let title = egui::RichText::new(&n.title).strong().color(if n.error { t.warning } else { t.text });
                             ui.add(egui::Label::new(title).wrap());
                             ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
-                                if ui.add(egui::Button::new(egui::RichText::new("×").color(t.text_dim)).frame(false)).on_hover_text("Dismiss").clicked() {
+                                if ui.add(egui::Button::new(egui::RichText::new(crate::i18n::ts("×")).color(t.text_dim)).frame(false)).on_hover_text(crate::i18n::ts("Dismiss")).clicked() {
                                     dismiss = Some(n.id);
                                 }
                             });

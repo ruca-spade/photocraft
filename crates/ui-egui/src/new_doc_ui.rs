@@ -117,6 +117,8 @@ fn get_s(f: &Map<String, Value>, k: &str, d: &str) -> String {
 }
 
 fn small_label(ui: &mut egui::Ui, s: &str) {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.label(RichText::new(s).size(11.5).color(t.text_dim));
 }
@@ -203,7 +205,7 @@ pub fn body(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
         // Right: Preset Details.
         ui.vertical(|ui| {
             ui.set_width(260.0);
-            ui.label(RichText::new("PRESET DETAILS").size(11.0).color(t.text_faint));
+            ui.label(RichText::new(crate::i18n::ts("PRESET DETAILS")).size(11.0).color(t.text_faint));
             ui.add_space(4.0);
             let mut name = get_s(f, "name", "Untitled-1");
             if ui.add(egui::TextEdit::singleline(&mut name).desired_width(250.0).font(egui::FontId::proportional(15.0))).changed() {

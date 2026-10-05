@@ -98,7 +98,7 @@ pub fn show(app: &crate::PhotocraftApp, ui: &mut egui::Ui, l: &Layer, on_set: bo
                 // selected first when clicked, so its items stay available.
                 let is_active = app.session.active().is_some_and(|s| s.active_layer == Some(l.id));
                 let enabled = if on_set || is_active { crate::menus::is_enabled(app, id) } else { true };
-                if ui.add_enabled(enabled, egui::Button::new(label)).clicked() {
+                if ui.add_enabled(enabled, egui::Button::new(crate::i18n::ts(label))).clicked() {
                     if !on_set {
                         actions.push(("layer.select".into(), json!({"layer": l.id.0})));
                     }
@@ -109,7 +109,7 @@ pub fn show(app: &crate::PhotocraftApp, ui: &mut egui::Ui, l: &Layer, on_set: bo
         }
     }
     ui.separator();
-    if ui.button("Rename Layer…").clicked() {
+    if ui.button(crate::i18n::ts("Rename Layer…")).clicked() {
         rename = true;
         ui.close();
     }

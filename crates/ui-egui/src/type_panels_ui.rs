@@ -188,7 +188,7 @@ pub fn windows(app: &mut PhotocraftApp, ctx: &egui::Context) {
             .show(ctx, |ui| {
                 ui.set_width(340.0);
                 ui.horizontal(|ui| {
-                    ui.label(RichText::new("Glyphs").color(t.text).size(12.0).strong());
+                    ui.label(RichText::new(crate::i18n::ts("Glyphs")).color(t.text).size(12.0).strong());
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                         if crate::icons::button(ui, "x", 20.0, false, "Close").clicked() {
                             close = true;
@@ -213,7 +213,7 @@ pub fn windows(app: &mut PhotocraftApp, ctx: &egui::Context) {
 pub fn styles_panel(app: &mut PhotocraftApp, ui: &mut egui::Ui, paragraph: bool) {
     let t = Tokens::get(ui.ctx());
     if app.session.active().is_none() {
-        ui.label(RichText::new("No document").color(t.text_faint).size(11.5));
+        ui.label(RichText::new(crate::i18n::ts("No document")).color(t.text_faint).size(11.5));
         return;
     }
     let prefix = if paragraph { "type.paragraphStyle" } else { "type.characterStyle" };
@@ -344,7 +344,7 @@ fn options_editor(app: &mut PhotocraftApp, ui: &mut egui::Ui, paragraph: bool, s
     let mut clear: Vec<&str> = Vec::new();
     ui.add_space(4.0);
     ui.horizontal(|ui| {
-        ui.label(RichText::new("Style Options").color(t.text).size(11.5).strong());
+        ui.label(RichText::new(crate::i18n::ts("Style Options")).color(t.text).size(11.5).strong());
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             if crate::icons::button(ui, "x", 18.0, false, "Close Style Options").clicked() {
                 app.ui.type_panels.options = None;
@@ -355,7 +355,7 @@ fn options_editor(app: &mut PhotocraftApp, ui: &mut egui::Ui, paragraph: bool, s
     let key = egui::Id::new(("style-name", paragraph, id));
     let mut name: String = ui.data(|d| d.get_temp(key)).unwrap_or_else(|| s["name"].as_str().unwrap_or("").to_string());
     ui.horizontal(|ui| {
-        ui.label(RichText::new("Name").color(t.text_dim).size(11.5));
+        ui.label(RichText::new(crate::i18n::ts("Name")).color(t.text_dim).size(11.5));
         let r = ui.add_enabled(id != 0, egui::TextEdit::singleline(&mut name).desired_width(170.0));
         if r.lost_focus() && name.trim() != s["name"].as_str().unwrap_or("") && !name.trim().is_empty() {
             let _ = run(app, &format!("{prefix}.rename"), json!({ "id": id, "name": name.trim() }));
@@ -398,7 +398,7 @@ fn options_editor(app: &mut PhotocraftApp, ui: &mut egui::Ui, paragraph: bool, s
                     let range = if kind == "num" { -1000.0..=10000.0 } else { -1296.0..=1296.0 };
                     let unit = if kind == "num" { "" } else { " pt" };
                     if auto {
-                        ui.label(RichText::new("Auto").color(t.text_dim).size(11.5));
+                        ui.label(RichText::new(crate::i18n::ts("Auto")).color(t.text_dim).size(11.5));
                     } else if crate::widgets::value_field(ui, &mut x, range, unit, 70.0).changed() {
                         set = Some(json!({ key: x }));
                     }
@@ -611,7 +611,7 @@ pub fn glyphs_panel(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     // Show: category.
     let mut cat = if app.ui.type_panels.glyph_category.is_empty() { "Entire Font".to_string() } else { app.ui.type_panels.glyph_category.clone() };
     ui.horizontal(|ui| {
-        ui.label(RichText::new("Show:").color(t.text_dim).size(11.5));
+        ui.label(RichText::new(crate::i18n::ts("Show:")).color(t.text_dim).size(11.5));
         let opts: Vec<(String, &str)> = photocraft_text::glyphs::CATEGORIES.iter().map(|c| (c.to_string(), *c)).collect();
         if crate::widgets::dropdown(ui, "glyph-category", &mut cat, &opts, 160.0) {
             app.ui.type_panels.glyph_category = cat.clone();
@@ -625,7 +625,7 @@ pub fn glyphs_panel(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     // Recently used.
     let recent = app.ui.type_panels.glyph_recent.clone();
     ui.add_space(2.0);
-    ui.label(RichText::new("Recently Used").color(t.text_faint).size(10.5));
+    ui.label(RichText::new(crate::i18n::ts("Recently Used")).color(t.text_faint).size(10.5));
     let (rr, _) = ui.allocate_exact_size(vec2(ui.available_width(), 26.0), Sense::hover());
     ui.painter().rect_filled(rr, 2.0, t.field);
     for (i, g) in recent.iter().enumerate() {
@@ -747,12 +747,12 @@ fn spelling_window(app: &mut PhotocraftApp, ctx: &egui::Context) {
         .anchor(Align2::CENTER_CENTER, vec2(0.0, -40.0))
         .show(ctx, |ui| {
             ui.set_width(380.0);
-            ui.label(RichText::new("Check Spelling").color(t.text).size(13.0).strong());
+            ui.label(RichText::new(crate::i18n::ts("Check Spelling")).color(t.text).size(13.0).strong());
             ui.add_space(6.0);
             ui.horizontal_top(|ui| {
                 ui.vertical(|ui| {
                     ui.set_width(250.0);
-                    ui.label(RichText::new("Not in Dictionary:").color(t.text_dim).size(11.5));
+                    ui.label(RichText::new(crate::i18n::ts("Not in Dictionary:")).color(t.text_dim).size(11.5));
                     let word = item.as_ref().and_then(|i| i["word"].as_str()).unwrap_or("");
                     let shown = if item.is_some() {
                         word.to_string()
@@ -763,10 +763,10 @@ fn spelling_window(app: &mut PhotocraftApp, ctx: &egui::Context) {
                     };
                     ui.add_enabled(false, egui::TextEdit::singleline(&mut shown.clone()).desired_width(240.0));
                     ui.add_space(4.0);
-                    ui.label(RichText::new("Change To:").color(t.text_dim).size(11.5));
+                    ui.label(RichText::new(crate::i18n::ts("Change To:")).color(t.text_dim).size(11.5));
                     ui.add_enabled(item.is_some(), egui::TextEdit::singleline(&mut change_to).desired_width(240.0));
                     ui.add_space(4.0);
-                    ui.label(RichText::new("Suggestions:").color(t.text_dim).size(11.5));
+                    ui.label(RichText::new(crate::i18n::ts("Suggestions:")).color(t.text_dim).size(11.5));
                     egui::Frame::NONE.fill(t.field).corner_radius(CornerRadius::same(3)).inner_margin(egui::Margin::same(4)).show(ui, |ui| {
                         ui.set_min_size(vec2(240.0, 110.0));
                         egui::ScrollArea::vertical().id_salt("spell-sugg").max_height(110.0).show(ui, |ui| {

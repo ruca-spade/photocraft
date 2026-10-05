@@ -678,6 +678,8 @@ pub fn cells(layout: &str, rect: egui::Rect, n: usize) -> Option<Vec<egui::Rect>
 
 /// A generic form dialog that runs `command` with its fields on OK (rendered by [`form_body`]).
 fn form(app: &mut PhotocraftApp, command: &str, label: &str, fields: Value, choices: Value) -> u64 {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let mut f = Map::new();
     f.insert("__command".into(), json!(command));
     f.insert("__label".into(), json!(label));

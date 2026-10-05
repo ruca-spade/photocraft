@@ -380,6 +380,8 @@ fn color_of(f: &photocraft_doc::Fill) -> Option<Color32> {
 
 /// A colour swatch that opens a picker; returns the new `#rrggbb` when changed.
 fn swatch(ui: &mut egui::Ui, fill: Option<&photocraft_doc::Fill>, tip: &str) -> Option<String> {
+    let tip_tr = crate::i18n::ts(tip);
+    let tip = tip_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let (r, resp) = ui.allocate_exact_size(vec2(26.0, 18.0), Sense::click());
     let current = fill.and_then(color_of);
@@ -427,7 +429,7 @@ fn swatch(ui: &mut egui::Ui, fill: Option<&photocraft_doc::Fill>, tip: &str) -> 
         if egui::color_picker::color_picker_color32(ui, &mut c, egui::color_picker::Alpha::Opaque) {
             out = Some(format!("#{:02x}{:02x}{:02x}", c.r(), c.g(), c.b()));
         }
-        if fill.is_some() && ui.button("No Color").clicked() {
+        if fill.is_some() && ui.button(crate::i18n::ts("No Color")).clicked() {
             out = Some("none".into());
         }
     });
@@ -446,14 +448,14 @@ pub fn shape_properties(app: &mut PhotocraftApp, ui: &mut egui::Ui, id: photocra
     let mut edit: Option<Value> = None;
     let key = |k: &str| format!("shape-{}-{k}", id.0);
     ui.add_space(6.0);
-    ui.label(egui::RichText::new("Appearance").font(crate::theme::semibold(12.0)).color(t.text));
+    ui.label(egui::RichText::new(crate::i18n::ts("Appearance")).font(crate::theme::semibold(12.0)).color(t.text));
     ui.horizontal(|ui| {
-        ui.label(egui::RichText::new("Fill").color(t.text_dim).size(12.0));
+        ui.label(egui::RichText::new(crate::i18n::ts("Fill")).color(t.text_dim).size(12.0));
         if let Some(c) = swatch(ui, sh.fill.as_ref(), "Set shape fill type") {
             edit = Some(if c == "none" { json!({"fill": null}) } else { json!({"fill": c, "coalesce": key("fill")}) });
         }
         ui.add_space(12.0);
-        ui.label(egui::RichText::new("Stroke").color(t.text_dim).size(12.0));
+        ui.label(egui::RichText::new(crate::i18n::ts("Stroke")).color(t.text_dim).size(12.0));
         if let Some(c) = swatch(ui, sh.stroke.as_ref().map(|s| &s.paint), "Set shape stroke type") {
             edit = Some(if c == "none" {
                 json!({"stroke": null})
@@ -480,7 +482,7 @@ pub fn shape_properties(app: &mut PhotocraftApp, ui: &mut egui::Ui, id: photocra
     });
     if let Some(live) = &sh.live {
         ui.add_space(6.0);
-        ui.label(egui::RichText::new("Shape").font(crate::theme::semibold(12.0)).color(t.text));
+        ui.label(egui::RichText::new(crate::i18n::ts("Shape")).font(crate::theme::semibold(12.0)).color(t.text));
         let num = |ui: &mut egui::Ui, label: &str, v: &mut f32, range: std::ops::RangeInclusive<f32>, unit: &str| -> bool {
             ui.label(egui::RichText::new(label).color(t.text_dim).size(12.0));
             crate::widgets::value_field(ui, v, range, unit, 64.0).changed()
@@ -557,7 +559,7 @@ fn thumb(ui: &egui::Ui, r: Rect, path: &Path, doc: &Document) {
 pub fn paths_panel(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     let t = Tokens::get(ui.ctx());
     let Some(st) = app.session.active() else {
-        ui.label(egui::RichText::new("No document").color(t.text_faint));
+        ui.label(egui::RichText::new(crate::i18n::ts("No document")).color(t.text_faint));
         return;
     };
     let doc = st.doc.clone();
@@ -566,7 +568,7 @@ pub fn paths_panel(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
         rows.push(("Work Path".into(), wp.clone(), true));
     }
     if rows.is_empty() {
-        ui.label(egui::RichText::new("Draw with the Pen tool (P) or make a work path from a selection.").color(t.text_faint).size(11.5));
+        ui.label(egui::RichText::new(crate::i18n::ts("Draw with the Pen tool (P) or make a work path from a selection.")).color(t.text_faint).size(11.5));
     }
     let mut action: Option<(&str, Value)> = None;
     for (name, path, work) in &rows {

@@ -76,13 +76,13 @@ pub fn properties(app: &mut PhotocraftApp, ui: &mut egui::Ui, layer: &Layer) {
     let t = Tokens::get(ui.ctx());
     let key = |k: &str| format!("artboard-{}-{k}", layer.id.0);
     let mut edit: Option<Value> = None;
-    ui.label(egui::RichText::new("Artboard").font(crate::theme::semibold(12.0)).color(t.text));
+    ui.label(egui::RichText::new(crate::i18n::ts("Artboard")).font(crate::theme::semibold(12.0)).color(t.text));
     ui.add_space(4.0);
     let mut preset = a.preset.clone();
     let mut opts: Vec<(String, &str)> = vec![(String::new(), "Custom")];
     opts.extend(photocraft_engine::artboard_cmds::PRESETS.iter().map(|(n, _, _)| (n.to_string(), *n)));
     ui.horizontal(|ui| {
-        ui.label(egui::RichText::new("Size").color(t.text_dim).size(12.0));
+        ui.label(egui::RichText::new(crate::i18n::ts("Size")).color(t.text_dim).size(12.0));
         if crate::widgets::dropdown(ui, &key("preset"), &mut preset, &opts, 150.0) && !preset.is_empty() {
             edit = Some(json!({"layer": layer.id.0, "preset": preset}));
         }
@@ -110,7 +110,7 @@ pub fn properties(app: &mut PhotocraftApp, ui: &mut egui::Ui, layer: &Layer) {
     });
     ui.add_space(4.0);
     ui.horizontal(|ui| {
-        ui.label(egui::RichText::new("Artboard Background Color").color(t.text_dim).size(12.0));
+        ui.label(egui::RichText::new(crate::i18n::ts("Artboard Background Color")).color(t.text_dim).size(12.0));
     });
     ui.horizontal(|ui| {
         let mut bg = a.background.name().to_string();

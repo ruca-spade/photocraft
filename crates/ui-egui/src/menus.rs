@@ -710,10 +710,10 @@ pub fn menu_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
             let mut buttons = Vec::with_capacity(TOP_MENUS.len());
             for top in TOP_MENUS {
                 let mine: Vec<&MenuItem> = items.iter().filter(|i| i.path.first().map(String::as_str) == Some(top)).collect();
-                let r = ui.menu_button(egui::RichText::new(top).color(t.text_dim), |ui| {
+                let r = ui.menu_button(egui::RichText::new(crate::i18n::tr(top)).color(t.text_dim), |ui| {
                     ui.set_min_width(220.0);
                     if mine.is_empty() {
-                        ui.weak("(coming soon)");
+                        ui.weak(crate::i18n::tr("(coming soon)"));
                     }
                     render_level(ui, &mine, 1, &mut clicked);
                 });
@@ -782,7 +782,7 @@ fn render_level_rows(ui: &mut egui::Ui, items: &[&MenuItem], depth: usize, click
                 }
                 continue;
             }
-            let mut text = it.label.clone();
+            let mut text = crate::i18n::tr(&it.label).into_owned();
             if let Some(c) = it.checked {
                 text = format!("{} {}", if c { "✔" } else { "  " }, text);
             }
@@ -807,7 +807,7 @@ fn render_level_rows(ui: &mut egui::Ui, items: &[&MenuItem], depth: usize, click
             let child: Vec<&MenuItem> = items.iter().copied().filter(|c| c.path.len() > depth && c.path[depth] == name).collect();
             let any_enabled = child.iter().any(|c| c.enabled && c.label != "---");
             ui.add_enabled_ui(any_enabled || !child.is_empty(), |ui| {
-                ui.menu_button(name, |ui| render_level(ui, &child, depth + 1, clicked));
+                ui.menu_button(crate::i18n::tr(name), |ui| render_level(ui, &child, depth + 1, clicked));
             });
             last_was_sep = false;
         }

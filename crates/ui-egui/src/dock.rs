@@ -341,7 +341,7 @@ pub fn show(app: &mut PhotocraftApp, ui: &mut egui::Ui, shown: &[Group], mut bod
                 ui.close();
             }
             ui.separator();
-            if ui.button("Close Tab Group").clicked() {
+            if ui.button(crate::i18n::ts("Close Tab Group")).clicked() {
                 actions.push(Action::Close(g));
                 ui.close();
             }

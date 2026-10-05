@@ -402,6 +402,8 @@ pub fn draw_overlay(app: &PhotocraftApp, painter: &egui::Painter, xf: &ViewXform
 // ------------------------------------------------------------------ options bars
 
 fn readout(ui: &mut egui::Ui, label: &str, value: Option<f64>) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.label(RichText::new(label).color(t.text_dim).size(11.0));
     ui.label(RichText::new(value.map_or(String::new(), |v| format!("{v:.2}"))).color(t.text).size(11.0).monospace());
@@ -468,9 +470,9 @@ pub fn options_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui, tool: Tool) -> bo
             if let Some(g) = m.count_groups.get(m.active_count_group) {
                 crate::widgets::vline(ui, 22.0);
                 let (mut ms, mut ls) = (g.marker_size as f32, g.label_size as f32);
-                ui.label(RichText::new("Marker Size").color(t.text_dim).size(11.0));
+                ui.label(RichText::new(crate::i18n::ts("Marker Size")).color(t.text_dim).size(11.0));
                 let a = crate::widgets::value_field(ui, &mut ms, 1.0..=10.0, "", 40.0).changed();
-                ui.label(RichText::new("Label Size").color(t.text_dim).size(11.0));
+                ui.label(RichText::new(crate::i18n::ts("Label Size")).color(t.text_dim).size(11.0));
                 let b = crate::widgets::value_field(ui, &mut ls, 8.0..=72.0, "", 44.0).changed();
                 if a || b {
                     let _ = app.run("count.setGroup", json!({"markerSize": ms.round(), "labelSize": ls.round()}));
@@ -480,9 +482,9 @@ pub fn options_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui, tool: Tool) -> bo
         }
         Tool::Note => {
             let t = Tokens::get(ui.ctx());
-            ui.label(RichText::new("Author:").color(t.text_dim).size(11.0));
+            ui.label(RichText::new(crate::i18n::ts("Author:")).color(t.text_dim).size(11.0));
             ui.add(egui::TextEdit::singleline(&mut app.ui.analysis.note_author).desired_width(120.0));
-            ui.label(RichText::new("Color:").color(t.text_dim).size(11.0));
+            ui.label(RichText::new(crate::i18n::ts("Color:")).color(t.text_dim).size(11.0));
             ui.color_edit_button_rgb(&mut app.ui.analysis.note_color);
             if ui.add_enabled_ui(!doc.notes.is_empty(), |ui| crate::widgets::secondary_button(ui, "Clear All", 0.0)).inner.clicked() {
                 let _ = app.run("notes.delete", json!({"all": true}));
@@ -510,6 +512,8 @@ fn float_frame(t: &Tokens) -> egui::Frame {
 
 /// Title row with a close button; returns true when closed.
 pub(crate) fn title_row(ui: &mut egui::Ui, title: &str) -> bool {
+    let title_tr = crate::i18n::ts(title);
+    let title = title_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let mut close = false;
     ui.horizontal(|ui| {
@@ -527,6 +531,8 @@ pub(crate) fn title_row(ui: &mut egui::Ui, title: &str) -> bool {
 
 /// A floating panel window; `movable` follows Window › Workspace › Lock Workspace.
 pub(crate) fn panel_window(app: &PhotocraftApp, ctx: &egui::Context, id: &str, title: &str, offset: egui::Vec2, width: f32, body: impl FnOnce(&mut egui::Ui)) {
+    let title_tr = crate::i18n::ts(title);
+    let title = title_tr.as_str();
     let t = Tokens::get(ctx);
     let canvas = app.last_canvas_rect;
     egui::Window::new(title)
@@ -649,7 +655,7 @@ fn notes_panel(app: &mut PhotocraftApp, ctx: &egui::Context) {
         close = title_row(ui, "Notes");
         match sel {
             None => {
-                ui.label(RichText::new("Click with the Note tool to add a note.").color(t.text_dim).size(11.0));
+                ui.label(RichText::new(crate::i18n::ts("Click with the Note tool to add a note.")).color(t.text_dim).size(11.0));
             }
             Some(i) => {
                 let note = &notes[i];
@@ -692,6 +698,8 @@ fn notes_panel(app: &mut PhotocraftApp, ctx: &egui::Context) {
 }
 
 fn num_field(ui: &mut egui::Ui, f: &mut Map<String, Value>, key: &str, label: &str, range: std::ops::RangeInclusive<f32>, suffix: &str) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.horizontal(|ui| {
         ui.add_sized(vec2(110.0, 18.0), egui::Label::new(RichText::new(label).color(t.text_dim).size(11.0)));
@@ -703,6 +711,8 @@ fn num_field(ui: &mut egui::Ui, f: &mut Map<String, Value>, key: &str, label: &s
 }
 
 fn choice(ui: &mut egui::Ui, f: &mut Map<String, Value>, key: &str, label: &str, opts: &[(&str, &str)]) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.horizontal(|ui| {
         ui.add_sized(vec2(110.0, 18.0), egui::Label::new(RichText::new(label).color(t.text_dim).size(11.0)));
@@ -763,7 +773,7 @@ fn dialog(app: &mut PhotocraftApp, ctx: &egui::Context) {
                         num_field(ui, &mut f, "pixelLength", "Pixel Length:", 0.001..=1e7, "");
                         num_field(ui, &mut f, "logicalLength", "Logical Length:", 0.0001..=1e7, "");
                         ui.horizontal(|ui| {
-                            ui.add_sized(vec2(110.0, 18.0), egui::Label::new(RichText::new("Logical Units:").color(t.text_dim).size(11.0)));
+                            ui.add_sized(vec2(110.0, 18.0), egui::Label::new(RichText::new(crate::i18n::ts("Logical Units:")).color(t.text_dim).size(11.0)));
                             let mut u = f.get("units").and_then(Value::as_str).unwrap_or("pixels").to_string();
                             if ui.add(egui::TextEdit::singleline(&mut u).desired_width(80.0)).changed() {
                                 f.insert("units".into(), json!(u));

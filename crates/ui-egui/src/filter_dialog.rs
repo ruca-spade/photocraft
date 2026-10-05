@@ -204,6 +204,8 @@ pub fn open(app: &mut PhotocraftApp, command: &str) -> Option<u64> {
 /// A filter dialog with live preview for `command` whose parameters follow `spec` (registry
 /// notation) instead of the command's own; `fixed` params (e.g. a plug-in id) are passed through.
 pub fn open_with_spec(app: &mut PhotocraftApp, command: &str, label: &str, spec: &str, fixed: Map<String, Value>) -> u64 {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let mut fields = fixed;
     fields.insert("__command".into(), json!(command));
     fields.insert("__label".into(), json!(label));
@@ -236,7 +238,7 @@ pub(crate) fn label(key: &str) -> String {
             s.push(ch);
         }
     }
-    s
+    crate::i18n::ts(&s)
 }
 
 fn choice_label(v: &str) -> String {

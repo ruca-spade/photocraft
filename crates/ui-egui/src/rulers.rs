@@ -14,6 +14,8 @@ pub const RULER: f32 = 16.0;
 
 /// A `#rrggbb` preference colour.
 fn pref_color(s: &str, fallback: Color32) -> Color32 {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     photocraft_engine::prefs::parse_hex(s).map_or(fallback, |c| Color32::from_rgb(c[0], c[1], c[2]))
 }
 

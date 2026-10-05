@@ -40,6 +40,8 @@ impl ThemeKind {
         Self::ALL[(i + 1) % Self::ALL.len()]
     }
     pub fn from_name(s: &str) -> Option<Self> {
+        let s_tr = crate::i18n::ts(s);
+        let s = s_tr.as_str();
         match s.to_ascii_lowercase().replace([' ', '_', '-', '(', ')'], "").as_str() {
             "pro" | "prodark" | "photoshop" | "dark" => Some(ThemeKind::Pro),
             "promedium" | "promediumgray" | "medium" | "mediumgray" => Some(ThemeKind::ProMedium),

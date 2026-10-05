@@ -119,7 +119,7 @@ pub fn indicators(
     let has_fx = !l.effects.items.is_empty();
     let show_blend = l.blend != BlendMode::Normal && l.blend != BlendMode::PassThrough;
     let fx_galley = has_fx.then(|| painter.layout_no_wrap("fx".into(), fx_font, t.text_dim));
-    let blend_galley = show_blend.then(|| painter.layout_no_wrap(l.blend.label().into(), blend_font, t.text_faint));
+    let blend_galley = show_blend.then(|| painter.layout_no_wrap(crate::i18n::ts(l.blend.label()), blend_font, t.text_faint));
     let mut items = Vec::new();
     if locked {
         items.push((Indicator::Lock, ICON_W));

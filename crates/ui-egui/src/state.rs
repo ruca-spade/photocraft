@@ -206,6 +206,8 @@ impl Tool {
         }
     }
     pub fn from_name(s: &str) -> Option<Tool> {
+        let s_tr = crate::i18n::ts(s);
+        let s = s_tr.as_str();
         let n = s.to_ascii_lowercase().replace([' ', '_', '-'], "");
         Tool::ALL.into_iter().find(|t| {
             let a = format!("{t:?}").to_ascii_lowercase();

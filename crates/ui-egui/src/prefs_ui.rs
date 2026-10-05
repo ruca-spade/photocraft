@@ -417,6 +417,8 @@ pub fn invoke(app: &mut PhotocraftApp, _ctx: &egui::Context, id: &str, params: &
 }
 
 fn open_kind(app: &mut PhotocraftApp, kind: &str, label: &str, fields: Value) -> u64 {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let mut f = Map::new();
     f.insert("__prefsui".into(), json!(kind));
     f.insert("__label".into(), json!(label));
@@ -552,6 +554,8 @@ fn choice_label(v: &str) -> String {
 }
 
 fn color_of(s: &str) -> Color32 {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     prefs::parse_hex(s).map_or(Color32::GRAY, |c| Color32::from_rgb(c[0], c[1], c[2]))
 }
 
@@ -575,7 +579,7 @@ fn prefs_body(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
                 ui.painter().text(
                     rect.left_center() + vec2(8.0, 0.0),
                     egui::Align2::LEFT_CENTER,
-                    title,
+                    crate::i18n::ts(title),
                     crate::theme::medium(12.5),
                     if sel { t.text } else { t.text_dim },
                 );
@@ -588,7 +592,7 @@ fn prefs_body(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
         ui.vertical(|ui| {
             ui.set_width(540.0);
             let title = SECTIONS.iter().find(|(id, _)| *id == section).map_or("General", |(_, t)| *t);
-            ui.label(RichText::new(title).font(crate::theme::semibold(14.0)).color(t.text));
+            ui.label(RichText::new(crate::i18n::ts(title)).font(crate::theme::semibold(14.0)).color(t.text));
             ui.add_space(6.0);
             egui::ScrollArea::vertical().max_height(390.0).id_salt("prefs-scroll").show(ui, |ui| {
                 let order: Vec<String> =
@@ -619,7 +623,7 @@ fn section_fields(ui: &mut egui::Ui, section: &str, obj: &mut Map<String, Value>
         for k in keys {
             let path = format!("{section}.{k}");
             let v = obj.get(&k).cloned().unwrap_or(Value::Null);
-            let label = humanize(&k);
+            let label = crate::i18n::ts(&humanize(&k));
             match &v {
                 Value::Bool(b) => {
                     ui.label("");
@@ -667,7 +671,7 @@ fn section_fields(ui: &mut egui::Ui, section: &str, obj: &mut Map<String, Value>
                     }
                 }
                 Value::Array(items) if k == "disks" => {
-                    ui.label(RichText::new("Scratch disks").color(t.text_dim));
+                    ui.label(RichText::new(crate::i18n::ts("Scratch disks")).color(t.text_dim));
                     let mut items = items.clone();
                     ui.vertical(|ui| {
                         for d in &mut items {
@@ -679,7 +683,7 @@ fn section_fields(ui: &mut egui::Ui, section: &str, obj: &mut Map<String, Value>
                                 *d = json!({"enabled": on, "path": path});
                             });
                         }
-                        if ui.small_button("Add disk").clicked() {
+                        if ui.small_button(crate::i18n::ts("Add disk")).clicked() {
                             items.push(json!({"enabled": true, "path": ""}));
                         }
                     });
@@ -687,8 +691,8 @@ fn section_fields(ui: &mut egui::Ui, section: &str, obj: &mut Map<String, Value>
                 }
                 Value::Array(items) => {
                     ui.label(RichText::new(label).color(t.text_dim));
-                    ui.label(RichText::new(format!("{} item{}", items.len(), if items.len() == 1 { "" } else { "s" })).color(t.text_faint));
-                    if !items.is_empty() && ui.small_button("Clear").clicked() {
+                    ui.label(RichText::new(crate::i18n::trf("{} items", &[&items.len()])).color(t.text_faint));
+                    if !items.is_empty() && ui.small_button(crate::i18n::ts("Clear")).clicked() {
                         obj.insert(k, json!([]));
                     }
                 }
@@ -720,8 +724,8 @@ fn shortcuts_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String
     }
     let mut filter = f.get("filter").and_then(Value::as_str).unwrap_or("").to_string();
     ui.horizontal(|ui| {
-        ui.label(RichText::new("Search").color(t.text_dim));
-        ui.add(egui::TextEdit::singleline(&mut filter).desired_width(260.0).hint_text("command or shortcut"));
+        ui.label(RichText::new(crate::i18n::ts("Search")).color(t.text_dim));
+        ui.add(egui::TextEdit::singleline(&mut filter).desired_width(260.0).hint_text(crate::i18n::ts("command or shortcut")));
     });
     f.insert("filter".into(), json!(filter));
     let mut overrides: BTreeMap<String, String> = f.get("overrides").and_then(|v| serde_json::from_value(v.clone()).ok()).unwrap_or_default();
@@ -755,7 +759,7 @@ fn shortcuts_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String
             } else if matches!(key, egui::Key::Backspace | egui::Key::Delete) && m.is_none() {
                 overrides.insert(selected.clone(), String::new());
                 capture = false;
-                message = "Shortcut removed.".into();
+                message = crate::i18n::ts("Shortcut removed.");
             } else if let Some(sc) = shortcut_text(key, m) {
                 let clash: Vec<String> = items
                     .iter()
@@ -764,9 +768,9 @@ fn shortcuts_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String
                     .collect();
                 overrides.insert(selected.clone(), sc.clone());
                 message = if clash.is_empty() {
-                    format!("{} assigned.", crate::shortcuts::pretty(&sc))
+                    crate::i18n::trf("{} assigned.", &[&crate::shortcuts::pretty(&sc)])
                 } else {
-                    format!("{} is already in use by {} and will be removed from it when you click OK.", crate::shortcuts::pretty(&sc), clash.join(", "))
+                    crate::i18n::trf("{} is already in use by {} and will be removed from it when you click OK.", &[&crate::shortcuts::pretty(&sc), &clash.join(", ")])
                 };
                 capture = false;
             }
@@ -787,19 +791,23 @@ fn shortcuts_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String
                 }
                 let top = path.first().cloned().unwrap_or_else(|| "Other".into());
                 if top != last_top {
-                    ui.label(RichText::new(&top).font(crate::theme::semibold(12.5)).color(t.text));
+                    ui.label(RichText::new(crate::i18n::ts(&top)).font(crate::theme::semibold(12.5)).color(t.text));
                     ui.label("");
                     ui.label("");
                     ui.end_row();
                     last_top = top;
                 }
-                let name = if path.len() > 1 { format!("{} › {}", path[1..].join(" › "), label) } else { label.clone() };
+                let name = if path.len() > 1 {
+                    format!("{} › {}", path[1..].iter().map(|p| crate::i18n::ts(p)).collect::<Vec<_>>().join(" › "), crate::i18n::ts(label))
+                } else {
+                    crate::i18n::ts(label)
+                };
                 let sel = selected == *id;
                 if ui.selectable_label(sel, RichText::new(format!("   {name}")).color(t.text_dim)).clicked() {
                     selected = id.clone();
                 }
                 if tab == 0 {
-                    let text = if sel && capture { "Press keys…".to_string() } else { cur.as_deref().map(crate::shortcuts::pretty).unwrap_or_default() };
+                    let text = if sel && capture { crate::i18n::ts("Press keys…") } else { cur.as_deref().map(crate::shortcuts::pretty).unwrap_or_default() };
                     let changed = overrides.contains_key(id);
                     let r = ui
                         .add(egui::Button::new(RichText::new(text).size(12.0).color(if changed { t.accent_text } else { t.text })).min_size(vec2(120.0, 18.0)));
@@ -808,7 +816,7 @@ fn shortcuts_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String
                         capture = true;
                         message.clear();
                     }
-                    ui.label(if changed { RichText::new("modified").color(t.text_faint).size(10.5) } else { RichText::new("") });
+                    ui.label(if changed { RichText::new(crate::i18n::ts("modified")).color(t.text_faint).size(10.5) } else { RichText::new("") });
                 } else {
                     let mut visible = !hidden.contains(id);
                     crate::widgets::checkbox(ui, &mut visible, "Visible");
@@ -835,25 +843,25 @@ fn shortcuts_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String
     if tab == 0 {
         ui.horizontal(|ui| {
             let has_sel = !selected.is_empty();
-            if ui.add_enabled(has_sel, egui::Button::new("Use Default")).clicked() {
+            if ui.add_enabled(has_sel, egui::Button::new(crate::i18n::ts("Use Default"))).clicked() {
                 overrides.remove(&selected);
-                message = "Default restored.".into();
+                message = crate::i18n::ts("Default restored.");
             }
-            if ui.add_enabled(has_sel, egui::Button::new("Delete Shortcut")).clicked() {
+            if ui.add_enabled(has_sel, egui::Button::new(crate::i18n::ts("Delete Shortcut"))).clicked() {
                 overrides.insert(selected.clone(), String::new());
-                message = "Shortcut removed.".into();
+                message = crate::i18n::ts("Shortcut removed.");
             }
-            if ui.button("Reset All to Defaults").clicked() {
+            if ui.button(crate::i18n::ts("Reset All to Defaults")).clicked() {
                 overrides.clear();
-                message = "All shortcuts reset to Photoshop defaults.".into();
+                message = crate::i18n::ts("All shortcuts reset to Photoshop defaults.");
             }
         });
-    } else if ui.button("Show All Menu Items").clicked() {
+    } else if ui.button(crate::i18n::ts("Show All Menu Items")).clicked() {
         hidden.clear();
         colors.clear();
     }
     if !message.is_empty() {
-        ui.label(RichText::new(&message).color(if message.contains("already in use") { t.warning } else { t.text_dim }));
+        ui.label(RichText::new(&message).color(if (message.contains("already in use") || message.contains("使用されています")) { t.warning } else { t.text_dim }));
     }
     f.insert("overrides".into(), json!(overrides));
     f.insert("hidden".into(), json!(hidden));
@@ -882,7 +890,7 @@ fn toolbar_tab(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
             }
         });
     });
-    if ui.button("Restore Defaults").clicked() {
+    if ui.button(crate::i18n::ts("Restore Defaults")).clicked() {
         hidden.clear();
     }
     f.insert("toolbarHidden".into(), json!(hidden));
@@ -892,7 +900,7 @@ fn presets_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, 
     let t = Tokens::get(ui.ctx());
     let mut kind = f.get("kind").and_then(Value::as_str).unwrap_or("brushes").to_string();
     ui.horizontal(|ui| {
-        ui.label(RichText::new("Preset Type").color(t.text_dim));
+        ui.label(RichText::new(crate::i18n::ts("Preset Type")).color(t.text_dim));
         let opts = [("brushes".to_string(), "Brushes"), ("customShapes".to_string(), "Custom Shapes"), ("patterns".to_string(), "Patterns")];
         crate::widgets::dropdown(ui, "preset-kind", &mut kind, &opts, 180.0);
     });
@@ -912,7 +920,7 @@ fn presets_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, 
             }
         }
         if list.is_empty() {
-            ui.label(RichText::new("No presets of this type.").color(t.text_faint));
+            ui.label(RichText::new(crate::i18n::ts("No presets of this type.")).color(t.text_faint));
         }
     });
     let mut new_name = f.get("newName").and_then(Value::as_str).unwrap_or("").to_string();
@@ -925,7 +933,7 @@ fn presets_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, 
             let _ = app.run("edit.presets.presetManager", json!({"action": "delete", "kind": kind, "index": selected}));
         }
         // Load Photoshop brushes (.abr) into the library.
-        if kind == "brushes" && ui.button("Load…").on_hover_text("Import Photoshop brushes (.abr)").clicked() {
+        if kind == "brushes" && ui.button(crate::i18n::ts("Load…")).on_hover_text(crate::i18n::ts("Import Photoshop brushes (.abr)")).clicked() {
             app.open_dialog_file();
         }
     });
@@ -938,7 +946,7 @@ fn presets_io_body(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
     let t = Tokens::get(ui.ctx());
     let mut action = f.get("action").and_then(Value::as_str).unwrap_or("export").to_string();
     ui.horizontal(|ui| {
-        ui.label(RichText::new("Action").color(t.text_dim));
+        ui.label(RichText::new(crate::i18n::ts("Action")).color(t.text_dim));
         crate::widgets::dropdown(ui, "presets-io", &mut action, &[("export".to_string(), "Export Presets"), ("import".to_string(), "Import Presets")], 180.0);
     });
     for (k, label) in [("brushes", "Brushes"), ("customShapes", "Custom Shapes")] {

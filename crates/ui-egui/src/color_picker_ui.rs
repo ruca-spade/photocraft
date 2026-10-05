@@ -51,6 +51,8 @@ pub fn hex(c: [f32; 3]) -> String {
 }
 
 pub fn parse_hex(s: &str) -> Option<[f32; 3]> {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let h = s.trim().trim_start_matches('#');
     if h.len() != 6 {
         return None;
@@ -205,7 +207,7 @@ pub fn body(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
         ui.add_space(14.0);
         ui.vertical(|ui| {
             // new / current swatches.
-            ui.label(egui::RichText::new("new").size(11.0).color(t.text_dim));
+            ui.label(egui::RichText::new(crate::i18n::ts("new")).size(11.0).color(t.text_dim));
             let (sw, _) = ui.allocate_exact_size(vec2(64.0, 72.0), Sense::hover());
             let orig = f.get("__orig").and_then(Value::as_str).and_then(parse_hex).unwrap_or(rgb);
             ui.painter().rect_filled(Rect::from_min_size(sw.min, vec2(64.0, 36.0)), 0.0, c32(rgb));
@@ -213,10 +215,10 @@ pub fn body(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
             ui.painter().rect_filled(cur, 0.0, c32(orig));
             ui.painter().rect_stroke(sw, 0.0, Stroke::new(1.0, t.field_border), StrokeKind::Outside);
             let click_cur = ui.interact(cur, ui.id().with("cp-current"), Sense::click());
-            if click_cur.on_hover_text("Click to restore the current colour").clicked() {
+            if click_cur.on_hover_text(crate::i18n::ts("Click to restore the current colour")).clicked() {
                 set_rgb(f, orig, None);
             }
-            ui.label(egui::RichText::new("current").size(11.0).color(t.text_dim));
+            ui.label(egui::RichText::new(crate::i18n::ts("current")).size(11.0).color(t.text_dim));
             ui.add_space(10.0);
             let mut web = f.get("__webOnly").and_then(Value::as_bool).unwrap_or(false);
             if widgets::checkbox(ui, &mut web, "Only Web Colors").changed() {
@@ -288,11 +290,11 @@ fn fields(ui: &mut egui::Ui, f: &mut Map<String, Value>, mode: &str, rgb: [f32; 
                 k[i] = x / 100.0;
                 edit = Some((photocraft_color::convert::cmyk_to_rgb(k).map(|c| c.clamp(0.0, 1.0)), None));
             }
-            ui.label(egui::RichText::new("%").color(t.text_faint));
+            ui.label(egui::RichText::new(crate::i18n::ts("%")).color(t.text_faint));
             ui.end_row();
         }
         ui.label("");
-        ui.label(egui::RichText::new("#").color(t.text_dim));
+        ui.label(egui::RichText::new(crate::i18n::ts("#")).color(t.text_dim));
         let mut h = hex(rgb).trim_start_matches('#').to_string();
         let r = ui.add(egui::TextEdit::singleline(&mut h).desired_width(54.0).font(crate::theme::mono(12.0)));
         if r.changed()

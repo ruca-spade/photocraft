@@ -165,6 +165,8 @@ pub struct Preview {
 }
 
 fn hash(text: &str) -> u64 {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     text.bytes().fold(0xcbf2_9ce4_8422_2325u64, |h, b| (h ^ u64::from(b)).wrapping_mul(0x100_0000_01b3))
 }
 
@@ -263,6 +265,8 @@ fn preview(app: &mut PhotocraftApp, ctx: &egui::Context, f: &Map<String, Value>)
 
 /// Photoshop-style radio button.
 fn radio(ui: &mut egui::Ui, on: bool, label: &str) -> egui::Response {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.horizontal(|ui| {
         ui.spacing_mut().item_spacing.x = 5.0;
@@ -279,6 +283,8 @@ fn radio(ui: &mut egui::Ui, on: bool, label: &str) -> egui::Response {
 
 /// Eyedropper button: the pipette icon with a +/− badge; labelled for accessibility.
 fn eyedropper(ui: &mut egui::Ui, badge: &str, selected: bool, label: &str) -> egui::Response {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let r = crate::icons::button(ui, "pipette", 26.0, selected, label);
     if !badge.is_empty() {
@@ -299,7 +305,7 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, Valu
     let c = controls(f);
     let select = s(f, "select", "sampledColors").to_string();
     ui.horizontal(|ui| {
-        ui.label(egui::RichText::new("Select:").color(t.text_dim));
+        ui.label(egui::RichText::new(crate::i18n::ts("Select:")).color(t.text_dim));
         let mut cur: &str = &select;
         if widgets::dropdown(ui, "color-range-select", &mut cur, SELECTS, 170.0) {
             f.insert("select".into(), json!(cur));
@@ -412,7 +418,7 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, Valu
         }
     });
     if app.session.active().is_none() {
-        ui.label(egui::RichText::new("Open a document to select a colour range.").color(t.text_faint));
+        ui.label(egui::RichText::new(crate::i18n::ts("Open a document to select a colour range.")).color(t.text_faint));
     }
 }
 
@@ -511,6 +517,8 @@ mod tests {
     }
 
     fn disabled(h: &Harness<'static, PhotocraftApp>, label: &str) -> bool {
+        let label_tr = crate::i18n::ts(label);
+        let label = label_tr.as_str();
         h.get_by_label(label).accesskit_node().is_disabled()
     }
 

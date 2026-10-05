@@ -26,10 +26,14 @@ fn text_layer(doc: &Document, id: LayerId) -> Option<&TextLayer> {
 }
 
 fn byte_of(text: &str, ci: usize) -> usize {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     text.char_indices().nth(ci).map_or(text.len(), |(b, _)| b)
 }
 
 fn char_of(text: &str, bi: usize) -> usize {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     text[..bi.min(text.len())].chars().count()
 }
 
@@ -195,6 +199,8 @@ fn current_text(app: &PhotocraftApp, id: LayerId) -> Option<String> {
 
 /// Replace the selection with `s`.
 fn insert(app: &mut PhotocraftApp, s: &str) {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let Some(ed) = app.ui.text_edit.clone() else { return };
     let (a, b) = (ed.caret.min(ed.anchor), ed.caret.max(ed.anchor));
     let s = s.replace("\r\n", "\n").replace('\r', "\n");
@@ -212,6 +218,8 @@ fn insert(app: &mut PhotocraftApp, s: &str) {
 /// IME composition. The preedit text is written into the layer (so it lays out and reflows like
 /// typed text) and replaced by every update; `commit` makes the result final.
 fn ime_update(app: &mut PhotocraftApp, s: &str, commit: bool) {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let Some(ed) = app.ui.text_edit.clone() else { return };
     let Some(text) = current_text(app, LayerId(ed.layer)) else { return };
     let n = text.chars().count();
@@ -238,6 +246,8 @@ fn ime_update(app: &mut PhotocraftApp, s: &str, commit: bool) {
 
 /// Character index of the previous / next word boundary.
 fn word_boundary(text: &str, from: usize, forward: bool) -> usize {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     let chars: Vec<char> = text.chars().collect();
     let mut i = from.min(chars.len());
     if forward {
@@ -712,7 +722,7 @@ pub fn options_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     let q = |v: f32| (v.clamp(0.0, 1.0) * 255.0).round() as u8;
     ui.painter().rect_filled(rect, 2.0, Color32::from_rgb(q(c[0]), q(c[1]), q(c[2])));
     ui.painter().rect_stroke(rect, 2.0, Stroke::new(1.0, t.field_border), egui::StrokeKind::Outside);
-    let resp = resp.on_hover_text("Set the text color");
+    let resp = resp.on_hover_text(crate::i18n::ts("Set the text color"));
     egui::Popup::from_toggle_button_response(&resp).close_behavior(egui::PopupCloseBehavior::CloseOnClickOutside).show(|ui| {
         let mut col = Color32::from_rgb(q(c[0]), q(c[1]), q(c[2]));
         if egui::color_picker::color_picker_color32(ui, &mut col, egui::color_picker::Alpha::Opaque) {
@@ -756,6 +766,8 @@ fn styles_at(app: &PhotocraftApp) -> Option<(photocraft_doc::text::CharStyle, ph
 }
 
 fn icon_label(ui: &mut egui::Ui, icon: &str, tip: &str) {
+    let tip_tr = crate::i18n::ts(tip);
+    let tip = tip_tr.as_str();
     let t = crate::theme::Tokens::get(ui.ctx());
     let (r, resp) = ui.allocate_exact_size(egui::vec2(18.0, 22.0), egui::Sense::hover());
     crate::icons::paint(ui, r, icon, 12.0, t.text_dim);
@@ -764,6 +776,10 @@ fn icon_label(ui: &mut egui::Ui, icon: &str, tip: &str) {
 
 /// Labelled numeric field (Photoshop's icon + value pairs). Returns the new value when edited.
 fn num_field(ui: &mut egui::Ui, label: &str, tip: &str, v: f32, range: std::ops::RangeInclusive<f32>, unit: &str, width: f32) -> Option<f32> {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
+    let tip_tr = crate::i18n::ts(tip);
+    let tip = tip_tr.as_str();
     let t = crate::theme::Tokens::get(ui.ctx());
     let mut v = v;
     let mut out = None;
@@ -875,7 +891,7 @@ pub fn type_properties(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
         }
         // Colour chip.
         ui.add_space(8.0);
-        ui.label(egui::RichText::new("Color:").color(t.text_dim).size(12.0));
+        ui.label(egui::RichText::new(crate::i18n::ts("Color:")).color(t.text_dim).size(12.0));
         let rgb = c.color.to_rgb();
         let q = |v: f32| (v.clamp(0.0, 1.0) * 255.0).round() as u8;
         let (rect, resp) = ui.allocate_exact_size(egui::vec2(40.0, 18.0), egui::Sense::click());

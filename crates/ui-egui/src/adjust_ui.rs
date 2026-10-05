@@ -36,7 +36,7 @@ pub fn selective_color_editor(app: &mut PhotocraftApp, ui: &mut egui::Ui, id: La
     let key = egui::Id::new(("selc-range", id.0));
     let mut range: usize = ui.data(|d| d.get_temp(key)).unwrap_or(0);
     ui.horizontal(|ui| {
-        ui.label(egui::RichText::new("Colors").color(t.text_dim));
+        ui.label(egui::RichText::new(crate::i18n::ts("Colors")).color(t.text_dim));
         let opts: Vec<(usize, &str)> = RANGE_LABELS.iter().copied().enumerate().collect();
         if widgets::dropdown(ui, &format!("selc-colors-{}", id.0), &mut range, &opts, 150.0) {
             ui.data_mut(|d| d.insert_temp(key, range));
@@ -95,7 +95,7 @@ pub fn color_lookup_editor(app: &mut PhotocraftApp, ui: &mut egui::Ui, id: Layer
     let mut sel = current.clone();
     let mut params: Option<Value> = None;
     ui.horizontal(|ui| {
-        ui.label(egui::RichText::new("3D LUT File").color(t.text_dim));
+        ui.label(egui::RichText::new(crate::i18n::ts("3D LUT File")).color(t.text_dim));
         if widgets::dropdown(ui, &format!("clrl-{}", id.0), &mut sel, &opts, 170.0) && sel != current && sel != "custom" {
             params = Some(json!({"lut": sel}));
         }

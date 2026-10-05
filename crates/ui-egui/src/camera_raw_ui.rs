@@ -201,6 +201,8 @@ fn tint_stops() -> Vec<Color32> {
 
 /// One labelled slider; marks the dialog dirty when it moves.
 fn row(ui: &mut egui::Ui, dirty: &mut bool, label: &str, v: &mut f32, range: std::ops::RangeInclusive<f32>, grad: Option<&[Color32]>) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let r = widgets::slider_row(ui, label, v, range, "", grad);
     if r.changed() {
         *dirty = true;
@@ -212,10 +214,14 @@ fn row(ui: &mut egui::Ui, dirty: &mut bool, label: &str, v: &mut f32, range: std
 }
 
 fn section(ui: &mut egui::Ui, title: &str, open: bool, body: impl FnOnce(&mut egui::Ui)) {
+    let title_tr = crate::i18n::ts(title);
+    let title = title_tr.as_str();
     egui::CollapsingHeader::new(egui::RichText::new(title).font(FontId::proportional(13.0))).default_open(open).show(ui, body);
 }
 
 fn wheel(ui: &mut egui::Ui, dirty: &mut bool, title: &str, w: &mut Wheel) {
+    let title_tr = crate::i18n::ts(title);
+    let title = title_tr.as_str();
     widgets::section_label(ui, title);
     let hs = widgets::hue_stops();
     row(ui, dirty, "Hue", &mut w.hue, 0.0..=360.0, Some(&hs));

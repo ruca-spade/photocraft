@@ -28,7 +28,7 @@ fn run(app: &mut PhotocraftApp, id: &str, p: Value) {
 pub fn panel(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     let t = Tokens::get(ui.ctx());
     let Some(st) = app.session.active() else {
-        ui.label(egui::RichText::new("No document").color(t.text_faint).size(11.5));
+        ui.label(egui::RichText::new(crate::i18n::ts("No document")).color(t.text_faint).size(11.5));
         return;
     };
     let doc = st.doc.clone();
@@ -60,7 +60,7 @@ pub fn panel(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
         if doc.layer_comps.is_empty() {
             ui.add_space(6.0);
             ui.label(
-                egui::RichText::new("Capture the visibility, position and style of every layer with + below, then switch between versions.")
+                egui::RichText::new(crate::i18n::ts("Capture the visibility, position and style of every layer with + below, then switch between versions."))
                     .color(t.text_faint)
                     .size(11.5),
             );

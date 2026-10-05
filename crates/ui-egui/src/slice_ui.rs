@@ -107,6 +107,8 @@ pub fn pointer(app: &mut PhotocraftApp, ev: ToolEvent, _mods: egui::Modifiers) -
 }
 
 fn hex(s: &str, fallback: Color32) -> Color32 {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let s = s.trim_start_matches('#');
     let b = |i: usize| s.get(i..i + 2).and_then(|h| u8::from_str_radix(h, 16).ok());
     match (s.len(), b(0), b(2), b(4)) {
@@ -249,7 +251,7 @@ pub fn options_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui, tool: Tool) -> bo
     let locked = app.session.file_menu.slices_locked;
     let t = crate::theme::Tokens::get(ui.ctx());
     if tool == Tool::Slice {
-        ui.label(egui::RichText::new("Style: Normal").color(t.text_dim));
+        ui.label(egui::RichText::new(crate::i18n::ts("Style: Normal")).color(t.text_dim));
         crate::widgets::vline(ui, 22.0);
         if ui.add_enabled_ui(has_doc && !locked, |ui| crate::widgets::secondary_button(ui, "Slices From Guides", 0.0)).inner.clicked() {
             let _ = app.run("slice.fromGuides", json!({}));
@@ -278,7 +280,7 @@ pub fn options_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui, tool: Tool) -> bo
         }
     }
     if locked {
-        ui.label(egui::RichText::new("Slices are locked (View › Lock Slices)").color(t.text_dim).size(11.0));
+        ui.label(egui::RichText::new(crate::i18n::ts("Slices are locked (View › Lock Slices)")).color(t.text_dim).size(11.0));
     }
     true
 }

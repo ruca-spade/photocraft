@@ -67,6 +67,8 @@ pub fn canvas_resize_params(old: (u32, u32), new_w: Option<f32>, new_h: Option<f
 
 /// Collapsible section header with a chevron, Photoshop Properties style. Returns whether it is open.
 fn section(ui: &mut egui::Ui, id: &str, title: &str) -> bool {
+    let title_tr = crate::i18n::ts(title);
+    let title = title_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let key = egui::Id::new(("doc-props-section", id));
     let mut open = ui.data(|d| d.get_temp::<bool>(key)).unwrap_or(true);
@@ -88,6 +90,8 @@ fn section(ui: &mut egui::Ui, id: &str, title: &str) -> bool {
 
 /// Right-aligned field label in a fixed-width column.
 fn field_label(ui: &mut egui::Ui, s: &str, w: f32) {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let (r, _) = ui.allocate_exact_size(vec2(w, 22.0), Sense::hover());
     ui.painter().text(pos2(r.right() - 4.0, r.center().y), Align2::RIGHT_CENTER, s, egui::FontId::proportional(12.0), t.text_dim);
@@ -108,6 +112,8 @@ fn committed_field(ui: &mut egui::Ui, id: &str, current: f32, suffix: &str) -> O
 
 /// A disabled-looking field (Photoshop greys Canvas X/Y for documents without artboards).
 fn dim_field(ui: &mut egui::Ui, text: &str) {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let (r, _) = ui.allocate_exact_size(vec2(74.0, 24.0), Sense::hover());
     ui.painter().rect_stroke(r, t.radius_sm, Stroke::new(1.0, t.field_border.gamma_multiply(0.6)), StrokeKind::Inside);
@@ -124,7 +130,7 @@ pub fn properties(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
         let (r, _) = ui.allocate_exact_size(vec2(24.0, 24.0), Sense::hover());
         ui.painter().rect_stroke(r, t.radius_sm, Stroke::new(1.0, t.field_border), StrokeKind::Inside);
         icons::paint(ui, r, "file", 15.0, t.icon);
-        ui.label(RichText::new("Document").color(t.text));
+        ui.label(RichText::new(crate::i18n::ts("Document")).color(t.text));
     });
     ui.add_space(4.0);
     widgets::hairline(ui);
@@ -174,7 +180,7 @@ pub fn properties(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
         ui.add_space(2.0);
         ui.horizontal(|ui| {
             ui.add_space(label_w + 6.0);
-            ui.label(RichText::new(format!("Resolution: {} pixels/inch", widgets::fmt_num(dpi as f64))).color(t.text));
+            ui.label(RichText::new(crate::i18n::trf("Resolution: {} pixels/inch", &[&widgets::fmt_num(dpi as f64)])).color(t.text));
         });
         ui.add_space(2.0);
         ui.horizontal(|ui| {

@@ -7,6 +7,8 @@ use crate::{PhotocraftApp, icons};
 
 /// Case-insensitive subsequence match score (higher is better); None = no match.
 pub fn fuzzy_score(query: &str, text: &str) -> Option<i32> {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     if query.is_empty() {
         return Some(0);
     }
@@ -120,7 +122,7 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                     }
                     sel = sel.min(hits.len().saturating_sub(1));
                     if hits.is_empty() {
-                        ui.label(RichText::new("No matching commands").color(t.text_faint));
+                        ui.label(RichText::new(crate::i18n::ts("No matching commands")).color(t.text_faint));
                     }
                     for (i, (_, id, label, detail, enabled)) in hits.iter().enumerate() {
                         let (rect, resp) = ui.allocate_exact_size(vec2(width, 32.0), Sense::click());
@@ -143,7 +145,7 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                         app.ui.palette_open = false;
                     }
                     ui.add_space(4.0);
-                    ui.label(RichText::new("↑↓ navigate   ↵ run   esc close").small().color(t.text_faint));
+                    ui.label(RichText::new(crate::i18n::ts("↑↓ navigate   ↵ run   esc close")).small().color(t.text_faint));
                     ui.data_mut(|d| {
                         d.insert_temp(qid, q);
                         d.insert_temp(sel_id, sel);

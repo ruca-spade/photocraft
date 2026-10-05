@@ -357,9 +357,9 @@ fn dialog(app: &mut PhotocraftApp, ctx: &egui::Context) {
             match kind.as_str() {
                 "newWorkspace" => {
                     text(ui, &mut f, "name", "Name:");
-                    ui.label(RichText::new("Capture").color(t.text_dim).size(11.0));
+                    ui.label(RichText::new(crate::i18n::ts("Capture")).color(t.text_dim).size(11.0));
                     ui.label(
-                        RichText::new("Panel locations are saved in the workspace. Keyboard shortcuts, menus and toolbar are optional.")
+                        RichText::new(crate::i18n::ts("Panel locations are saved in the workspace. Keyboard shortcuts, menus and toolbar are optional."))
                             .color(t.text_faint)
                             .size(10.5),
                     );

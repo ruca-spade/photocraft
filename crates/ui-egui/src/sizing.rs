@@ -121,6 +121,8 @@ pub fn body(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
 }
 
 fn label(ui: &mut egui::Ui, text: &str, width: f32) {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let (r, _) = ui.allocate_exact_size(vec2(width, 22.0), Sense::hover());
     ui.painter().text(pos2(r.right() - 6.0, r.center().y), Align2::RIGHT_CENTER, text, egui::FontId::proportional(12.0), t.text_dim);
@@ -199,7 +201,7 @@ fn image_size(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
     let chain = Rect::from_center_size(pos2(bracket.left() + 8.0, bracket.center().y), vec2(14.0, 14.0));
     ui.painter().rect_filled(chain, 2.0, if link.hovered() { t.hover } else { Color32::TRANSPARENT });
     crate::icons::paint(ui, chain, if constrain { "link" } else { "unlink" }, 11.0, col);
-    if link.on_hover_text("Constrain proportions").clicked() {
+    if link.on_hover_text(crate::i18n::ts("Constrain proportions")).clicked() {
         constrain = !constrain;
         f.insert("__constrain".into(), json!(constrain));
     }
@@ -222,7 +224,7 @@ fn image_size(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
             }
             f.insert("resolution".into(), json!(r));
         }
-        ui.label(egui::RichText::new("Pixels/Inch").color(t.text_dim).size(12.0));
+        ui.label(egui::RichText::new(crate::i18n::ts("Pixels/Inch")).color(t.text_dim).size(12.0));
     });
     ui.add_space(4.0);
     ui.horizontal(|ui| {
@@ -256,7 +258,7 @@ fn canvas_size(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
     let (ow, oh) = (num(f, "__origW"), num(f, "__origH"));
     let bpp = num(f, "__bytesPerPixel").max(1.0);
     let relative = f.get("relative").and_then(Value::as_bool).unwrap_or(false);
-    ui.label(egui::RichText::new("Current Size").font(crate::theme::semibold(12.0)).color(t.text));
+    ui.label(egui::RichText::new(crate::i18n::ts("Current Size")).font(crate::theme::semibold(12.0)).color(t.text));
     info_row(ui, "Size:", human_bytes(ow * oh * bpp));
     info_row(ui, "Width:", format!("{} px", ow as i64));
     info_row(ui, "Height:", format!("{} px", oh as i64));
@@ -265,7 +267,7 @@ fn canvas_size(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
     ui.add_space(6.0);
     let (nw, nh) = if relative { (ow + num(f, "width"), oh + num(f, "height")) } else { (num(f, "width"), num(f, "height")) };
     ui.horizontal(|ui| {
-        ui.label(egui::RichText::new("New Size").font(crate::theme::semibold(12.0)).color(t.text));
+        ui.label(egui::RichText::new(crate::i18n::ts("New Size")).font(crate::theme::semibold(12.0)).color(t.text));
         ui.label(egui::RichText::new(human_bytes(nw.max(0.0) * nh.max(0.0) * bpp)).color(t.text_dim).size(12.0));
     });
     ui.horizontal(|ui| {

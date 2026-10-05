@@ -8,6 +8,8 @@ use crate::state::Tool;
 
 /// Parse `Cmd+Shift+N` style strings. `Cmd` maps to ⌘ on macOS and Ctrl elsewhere.
 pub fn parse(s: &str) -> Option<KeyboardShortcut> {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let mut mods = Modifiers::NONE;
     let mut key = None;
     for part in s.split('+') {
@@ -35,6 +37,8 @@ pub fn parse(s: &str) -> Option<KeyboardShortcut> {
 
 /// Human-readable form for menus.
 pub fn pretty(s: &str) -> String {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let mac = cfg!(target_os = "macos");
     s.split('+')
         .map(|p| match (p, mac) {

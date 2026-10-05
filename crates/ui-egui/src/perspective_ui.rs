@@ -313,15 +313,15 @@ pub fn options_bar(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
         }
     } else {
         ui.label(format!("{} plane(s)", s.planes.len()));
-        if ui.button("Remove Planes").clicked() {
+        if ui.button(crate::i18n::ts("Remove Planes")).clicked() {
             s.planes.clear();
             s.update_grid();
         }
     }
     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-        if crate::widgets::primary_button(ui, "✓", 32.0).on_hover_text("Commit Perspective Warp (↩)").clicked() {
+        if crate::widgets::primary_button(ui, "✓", 32.0).on_hover_text(crate::i18n::ts("Commit Perspective Warp (↩)")).clicked() {
             commit(app);
-        } else if crate::widgets::secondary_button(ui, "⊘", 32.0).on_hover_text("Cancel (Esc)").clicked() {
+        } else if crate::widgets::secondary_button(ui, "⊘", 32.0).on_hover_text(crate::i18n::ts("Cancel (Esc)")).clicked() {
             app.distort.perspective = None;
         }
     });

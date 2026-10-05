@@ -820,7 +820,7 @@ fn start_screen(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
                 ui.painter().galley(egui::pos2(r2.left() + 10.0, r.bottom() - by.size().y - 8.0), by, t.text_faint);
             });
             ui.add_space(6.0);
-            ui.label(egui::RichText::new("Create a new document or open an existing file.").color(t.text_dim).size(14.0));
+            ui.label(egui::RichText::new(crate::i18n::ts("Create a new document or open an existing file.")).color(t.text_dim).size(14.0));
             ui.add_space(22.0);
             ui.horizontal(|ui| {
                 ui.add_space(((card.width() - 2.0 * 190.0 - 12.0) / 2.0).max(0.0));

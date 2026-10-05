@@ -28,6 +28,8 @@ fn doc_stem(app: &PhotocraftApp) -> String {
 
 /// A generic form dialog for `command` (rendered by `view_cmds::form_body`).
 fn form(app: &mut PhotocraftApp, command: &str, label: &str, fields: Value, choices: Value) -> Value {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let mut f = Map::new();
     f.insert("__command".into(), json!(command));
     f.insert("__label".into(), json!(label));
@@ -324,12 +326,16 @@ fn dropdown_str(ui: &mut egui::Ui, id: &str, f: &mut Map<String, Value>, key: &s
 }
 
 fn check(ui: &mut egui::Ui, f: &mut Map<String, Value>, key: &str, label: &str, d: bool) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let mut v = b(f, key, d);
     crate::widgets::checkbox(ui, &mut v, label);
     f.insert(key.into(), json!(v));
 }
 
 fn number(ui: &mut egui::Ui, f: &mut Map<String, Value>, key: &str, label: &str, range: std::ops::RangeInclusive<f32>, unit: &str, d: f64) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.horizontal(|ui| {
         ui.label(egui::RichText::new(label).color(t.text_dim));
@@ -386,7 +392,7 @@ fn web_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, Valu
         // Settings.
         ui.vertical(|ui| {
             ui.set_width(250.0);
-            ui.label(egui::RichText::new("Preset").color(t.text_dim));
+            ui.label(egui::RichText::new(crate::i18n::ts("Preset")).color(t.text_dim));
             let mut preset = s(f, "__preset", "");
             let mut opts: Vec<(String, &str)> = vec![("".into(), "[Unnamed]")];
             opts.extend(web_cmds::PRESETS.iter().map(|p| (p.to_string(), *p)));
@@ -446,7 +452,7 @@ fn web_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, Valu
             }
             if fmt != "png24" || !b(f, "transparency", true) {
                 ui.horizontal(|ui| {
-                    ui.label(egui::RichText::new("Matte").color(t.text_dim));
+                    ui.label(egui::RichText::new(crate::i18n::ts("Matte")).color(t.text_dim));
                     let mut m = s(f, "matte", "#ffffff");
                     if ui.add(egui::TextEdit::singleline(&mut m).desired_width(80.0)).changed() {
                         f.insert("matte".into(), json!(m));
@@ -456,7 +462,7 @@ fn web_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, Valu
             ui.add_space(6.0);
             check(ui, f, "convertToSrgb", "Convert to sRGB", true);
             ui.horizontal(|ui| {
-                ui.label(egui::RichText::new("Metadata").color(t.text_dim));
+                ui.label(egui::RichText::new(crate::i18n::ts("Metadata")).color(t.text_dim));
                 dropdown_str(
                     ui,
                     "web-meta",
@@ -467,7 +473,7 @@ fn web_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, Valu
                 );
             });
             ui.add_space(8.0);
-            ui.label(egui::RichText::new("Image Size").font(crate::theme::semibold(12.0)).color(t.text));
+            ui.label(egui::RichText::new(crate::i18n::ts("Image Size")).font(crate::theme::semibold(12.0)).color(t.text));
             number(ui, f, "percent", "Percent", 1.0..=1000.0, "%", 100.0);
             let pct = n(f, "percent", 100.0) / 100.0;
             ui.label(
@@ -616,7 +622,7 @@ fn print_body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, Va
             };
             head(ui, "Printer Setup");
             ui.horizontal(|ui| {
-                ui.label(egui::RichText::new("Printer").color(t.text_dim));
+                ui.label(egui::RichText::new(crate::i18n::ts("Printer")).color(t.text_dim));
                 let mut pr = s(f, "printer", "");
                 if ui.add(egui::TextEdit::singleline(&mut pr).hint_text("Default printer").desired_width(180.0)).changed() {
                     f.insert("printer".into(), json!(pr));

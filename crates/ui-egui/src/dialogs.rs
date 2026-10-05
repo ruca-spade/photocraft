@@ -70,7 +70,7 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                 ui.set_min_width(w);
                 ui.set_max_width(w);
             }
-            let t = ui.add(egui::Label::new(egui::RichText::new(&title).font(crate::theme::semibold(15.0))).selectable(false)).rect;
+            let t = ui.add(egui::Label::new(egui::RichText::new(crate::i18n::ts(&title)).font(crate::theme::semibold(15.0))).selectable(false)).rect;
             let bar = egui::Rect::from_min_max(t.min, egui::pos2(ui.max_rect().right(), t.bottom()));
             drag = ui.interact(bar, id.with("title"), egui::Sense::drag()).drag_delta();
             ui.add_space(4.0);
@@ -79,7 +79,7 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
             match d.kind {
                 DialogKind::NewDocument => crate::new_doc_ui::body(ui, &mut fields),
                 DialogKind::About => {
-                    ui.label("PhotoCraft — an open-source, native image editor written in Rust.");
+                    ui.label(crate::i18n::ts("PhotoCraft — an open-source, native image editor written in Rust."));
                     ui.label(format!("Version {}", photocraft_engine::build_info::long_version()));
                     ui.add_space(12.0);
                     ui.vertical_centered(|ui| {
@@ -88,7 +88,7 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                         crate::links::link_row(app, ui);
                     });
                     ui.add_space(10.0);
-                    ui.weak("egui · wgpu · photocraft-engine");
+                    ui.weak(crate::i18n::ts("egui · wgpu · photocraft-engine"));
                 }
                 DialogKind::Command if crate::variables_ui::owns(&fields) => crate::variables_ui::body(app, ui, &mut fields),
                 DialogKind::Command if crate::file_ui::owns(&fields) => crate::file_ui::body(app, ui, &mut fields),
@@ -208,6 +208,8 @@ pub fn confirm(app: &mut PhotocraftApp, id: u64) -> Result<Value, String> {
 /// schema dialog for filters, the Color Range dialog for `select.colorRange`, otherwise a bare
 /// confirm dialog.
 pub fn open_command_dialog(app: &mut PhotocraftApp, command: &str, label: &str) -> u64 {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     if command == crate::color_range_ui::COMMAND {
         return crate::color_range_ui::open(app);
     }

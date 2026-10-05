@@ -45,7 +45,7 @@ pub fn show(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     let t = Tokens::get(ui.ctx());
     let Some(st) = app.session.active() else {
         ui.add_space(6.0);
-        ui.label(RichText::new("No document").color(t.text_faint));
+        ui.label(RichText::new(crate::i18n::ts("No document")).color(t.text_faint));
         return;
     };
     let doc = st.doc.clone();
@@ -248,6 +248,8 @@ pub fn show(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
 }
 
 fn item(ui: &mut egui::Ui, actions: &mut Vec<(String, Value)>, label: &str, cmd: &str, p: Value) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     if ui.button(label).clicked() {
         actions.push((cmd.into(), p));
         ui.close();
@@ -264,7 +266,7 @@ fn indicates_items(ui: &mut egui::Ui, actions: &mut Vec<(String, Value)>, channe
 
 /// Overlay colour presets (Channel Options › Color) and opacity.
 fn overlay_colors(ui: &mut egui::Ui, actions: &mut Vec<(String, Value)>, channel: Value) {
-    ui.menu_button("Overlay Color", |ui| {
+    ui.menu_button(crate::i18n::ts("Overlay Color"), |ui| {
         for (label, hex) in [("Red", "#ff0000"), ("Green", "#00c000"), ("Blue", "#0050ff"), ("Cyan", "#00d0e0"), ("Magenta", "#e000c0"), ("Yellow", "#f0d000")]
         {
             if ui.button(label).clicked() {
@@ -273,7 +275,7 @@ fn overlay_colors(ui: &mut egui::Ui, actions: &mut Vec<(String, Value)>, channel
             }
         }
     });
-    ui.menu_button("Overlay Opacity", |ui| {
+    ui.menu_button(crate::i18n::ts("Overlay Opacity"), |ui| {
         for o in [25, 50, 75, 100] {
             if ui.button(format!("{o}%")).clicked() {
                 actions.push(("channel.options".into(), json!({ "channel": channel.clone(), "opacity": o })));

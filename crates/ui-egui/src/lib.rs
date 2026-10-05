@@ -49,6 +49,7 @@ pub mod layer_style;
 pub mod layer_tree_ui;
 pub mod links;
 pub mod liquify_ui;
+pub mod i18n;
 pub mod menu_catalog;
 pub mod menus;
 pub mod new_doc_ui;

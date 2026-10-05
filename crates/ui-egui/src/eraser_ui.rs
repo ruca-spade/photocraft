@@ -54,6 +54,8 @@ pub fn finish_stroke(app: &mut PhotocraftApp, tool: Tool, points: &[[f64; 3]]) -
 }
 
 fn opt(ui: &mut egui::Ui, text: &str) {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.label(egui::RichText::new(text).color(t.text_dim).size(12.0));
 }

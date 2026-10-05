@@ -948,6 +948,8 @@ fn pipeline(
     format: wgpu::TextureFormat,
     blend: Option<wgpu::BlendState>,
 ) -> wgpu::RenderPipeline {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
         label: Some(label),
         layout: Some(layout),

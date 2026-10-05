@@ -40,11 +40,15 @@ const PATTERNS: [(PatternStyle, &str); 4] =
 
 /// Percent slider over a 0..`max` fraction.
 fn pct(ui: &mut egui::Ui, label: &str, v: &mut f32, max: f32) -> bool {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     signed_pct(ui, label, v, 0.0, max)
 }
 
 /// Percent slider over a `min..max` fraction.
 fn signed_pct(ui: &mut egui::Ui, label: &str, v: &mut f32, min: f32, max: f32) -> bool {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let mut p = (*v * 100.0).round();
     let changed = widgets::slider_row(ui, label, &mut p, min * 100.0..=max * 100.0, "%", None).changed();
     if changed {
@@ -54,6 +58,8 @@ fn signed_pct(ui: &mut egui::Ui, label: &str, v: &mut f32, min: f32, max: f32) -
 }
 
 fn num(ui: &mut egui::Ui, label: &str, v: &mut f32, range: std::ops::RangeInclusive<f32>, suffix: &str) -> bool {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let mut x = *v;
     let changed = widgets::slider_row(ui, label, &mut x, range.clone(), suffix, None).changed();
     if changed {
@@ -63,6 +69,8 @@ fn num(ui: &mut egui::Ui, label: &str, v: &mut f32, range: std::ops::RangeInclus
 }
 
 fn dim(ui: &mut egui::Ui, s: &str) {
+    let s_tr = crate::i18n::ts(s);
+    let s = s_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.label(RichText::new(s).color(t.text_dim));
 }
@@ -76,7 +84,7 @@ fn control_row(ui: &mut egui::Ui, id: &str, d: &mut Dynamic, angle: bool) {
         widgets::dropdown(ui, id, &mut d.control, &CONTROLS[..n], 130.0);
         if d.control == Control::Fade {
             let mut steps = d.fade_steps as f32;
-            if widgets::value_field(ui, &mut steps, 1.0..=9999.0, "", 56.0).on_hover_text("Fade steps").changed() {
+            if widgets::value_field(ui, &mut steps, 1.0..=9999.0, "", 56.0).on_hover_text(crate::i18n::ts("Fade steps")).changed() {
                 d.fade_steps = steps.round().clamp(1.0, 9999.0) as u32;
             }
         }
@@ -86,6 +94,8 @@ fn control_row(ui: &mut egui::Ui, id: &str, d: &mut Dynamic, angle: bool) {
 
 /// A jitter slider, its Control row and (optionally) the Minimum slider: one Photoshop block.
 fn dynamic(ui: &mut egui::Ui, id: &str, label: &str, d: &mut Dynamic, max: f32, minimum: Option<&str>, angle: bool) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     pct(ui, label, &mut d.jitter, max);
     control_row(ui, id, d, angle);
     if let Some(m) = minimum {
@@ -97,6 +107,8 @@ fn dynamic(ui: &mut egui::Ui, id: &str, label: &str, d: &mut Dynamic, max: f32, 
 /// Size: a value field over a logarithmic slider (small sizes get most of the travel).
 /// `restore` adds Photoshop's "Restore original size" button (sampled tips).
 fn size_row(ui: &mut egui::Ui, label: &str, size: &mut f32, max: f32, restore: Option<f32>) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.horizontal(|ui| {
         ui.label(RichText::new(label).color(t.text_dim));
@@ -211,7 +223,7 @@ fn ellipse_widget(ui: &mut egui::Ui, angle: &mut f32, roundness: &mut f32) -> bo
         p.circle_filled(c + h, 4.0, Color32::WHITE);
         p.circle_stroke(c + h, 4.0, Stroke::new(1.0, t.accent));
     }
-    let _ = resp.on_hover_text("Drag the arrow to set the angle, the dots to set the roundness");
+    let _ = resp.on_hover_text(crate::i18n::ts("Drag the arrow to set the angle, the dots to set the roundness"));
     changed
 }
 
@@ -523,6 +535,8 @@ fn transfer(ui: &mut egui::Ui, b: &mut BrushSettings) {
 
 /// Tilt is stored in degrees (±90, W3C Pointer Events); Photoshop shows it as ±100 %.
 fn tilt(ui: &mut egui::Ui, label: &str, deg: &mut f32) {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let mut v = (*deg / 90.0).clamp(-1.0, 1.0);
     if signed_pct(ui, label, &mut v, -1.0, 1.0) {
         *deg = v * 90.0;

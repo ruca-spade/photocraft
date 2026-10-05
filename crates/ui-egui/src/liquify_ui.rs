@@ -468,7 +468,7 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
         let mut strip = ui.new_child(egui::UiBuilder::new().max_rect(left.shrink2(vec2(6.0, 8.0))));
         strip.spacing_mut().item_spacing.y = 4.0;
         for tool in LiquifyTool::ALL {
-            let tip = format!("{} ({})", tool.label(), shortcut(tool));
+            let tip = format!("{} ({})", crate::i18n::ts(tool.label()), shortcut(tool));
             if crate::icons::button(&mut strip, tool_icon(tool), 34.0, d.opts.tool == tool, &tip).clicked() {
                 d.opts.tool = tool;
             }
@@ -517,7 +517,7 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
             widgets::section_label(ui, "View Options");
             widgets::checkbox(ui, &mut d.opts.show_mesh, "Show Mesh");
             ui.horizontal(|ui| {
-                ui.label("Mesh Size");
+                ui.label(crate::i18n::ts("Mesh Size"));
                 widgets::dropdown(ui, "liquify-mesh-size", &mut d.opts.mesh_size, &[(0, "Small"), (1, "Medium"), (2, "Large")], 110.0);
             });
             widgets::checkbox(ui, &mut d.opts.show_mask, "Show Mask");

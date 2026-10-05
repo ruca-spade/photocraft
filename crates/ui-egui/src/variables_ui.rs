@@ -126,7 +126,7 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String,
     ui.separator();
 
     if layers.is_empty() {
-        ui.weak("Open a document to define variables.");
+        ui.weak(crate::i18n::ts("Open a document to define variables."));
     } else if page == "define" {
         define_page(ui, &t, &layers, &mut state);
     } else {
@@ -139,7 +139,7 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String,
 
 fn define_page(ui: &mut egui::Ui, _t: &Tokens, layers: &[(u64, String, bool)], state: &mut Value) {
     let Some(defs) = state.get_mut("defs").and_then(Value::as_array_mut) else { return };
-    ui.label("Variables bind a layer's visibility, text or pixels to a named data slot.");
+    ui.label(crate::i18n::ts("Variables bind a layer's visibility, text or pixels to a named data slot."));
     ui.add_space(4.0);
     let mut remove = None;
     for (i, d) in defs.iter_mut().enumerate() {
@@ -168,7 +168,7 @@ fn define_page(ui: &mut egui::Ui, _t: &Tokens, layers: &[(u64, String, bool)], s
                     d["method"] = json!(m);
                 }
             }
-            if ui.button("−").on_hover_text("Remove variable").clicked() {
+            if ui.button(crate::i18n::ts("−")).on_hover_text(crate::i18n::ts("Remove variable")).clicked() {
                 remove = Some(i);
             }
         });
@@ -177,7 +177,7 @@ fn define_page(ui: &mut egui::Ui, _t: &Tokens, layers: &[(u64, String, bool)], s
         defs.remove(i);
     }
     ui.add_space(4.0);
-    if ui.button("+ Add variable").clicked() {
+    if ui.button(crate::i18n::ts("+ Add variable")).clicked() {
         let n = defs.len() + 1;
         defs.push(json!({"name": format!("var{n}"), "layer": layers[0].0, "type": "visibility", "method": "fit", "align": "center", "clip": false}));
     }
@@ -196,27 +196,27 @@ fn data_sets_page(ui: &mut egui::Ui, _t: &Tokens, state: &mut Value, fields: &mu
         })
         .unwrap_or_default();
     if def_meta.is_empty() {
-        ui.weak("Define at least one variable first.");
+        ui.weak(crate::i18n::ts("Define at least one variable first."));
         return;
     }
     let Some(sets) = state.get_mut("dataSets").and_then(Value::as_array_mut) else { return };
     let mut cur = fields.get("__cur").and_then(Value::as_u64).unwrap_or(0) as usize;
 
     ui.horizontal(|ui| {
-        if ui.button("◀").clicked() && cur > 0 {
+        if ui.button(crate::i18n::ts("◀")).clicked() && cur > 0 {
             cur -= 1;
         }
         let name = sets.get(cur).and_then(|s| s.get("name")).and_then(Value::as_str).unwrap_or("(none)").to_string();
         ui.label(format!("Data Set: {name}  ({}/{})", if sets.is_empty() { 0 } else { cur + 1 }, sets.len()));
-        if ui.button("▶").clicked() && cur + 1 < sets.len() {
+        if ui.button(crate::i18n::ts("▶")).clicked() && cur + 1 < sets.len() {
             cur += 1;
         }
-        if ui.button("New").clicked() {
+        if ui.button(crate::i18n::ts("New")).clicked() {
             let n = sets.len() + 1;
             sets.push(json!({"name": format!("Data Set {n}"), "values": []}));
             cur = sets.len() - 1;
         }
-        if !sets.is_empty() && ui.button("Delete").clicked() {
+        if !sets.is_empty() && ui.button(crate::i18n::ts("Delete")).clicked() {
             sets.remove(cur);
             cur = cur.saturating_sub(1);
         }
@@ -227,7 +227,7 @@ fn data_sets_page(ui: &mut egui::Ui, _t: &Tokens, state: &mut Value, fields: &mu
         // name
         let mut sname = set.get("name").and_then(Value::as_str).unwrap_or("").to_string();
         ui.horizontal(|ui| {
-            ui.label("Name:");
+            ui.label(crate::i18n::ts("Name:"));
             if ui.add(egui::TextEdit::singleline(&mut sname).desired_width(200.0)).changed() {
                 set["name"] = json!(sname);
             }
@@ -254,7 +254,7 @@ fn data_sets_page(ui: &mut egui::Ui, _t: &Tokens, state: &mut Value, fields: &mu
                 match vty.as_str() {
                     "visibility" => {
                         let mut on = values[i].get("value").and_then(Value::as_bool).unwrap_or(true);
-                        if ui.checkbox(&mut on, "Visible").changed() {
+                        if ui.checkbox(&mut on, crate::i18n::ts("Visible")).changed() {
                             values[i]["value"] = json!(on);
                         }
                     }

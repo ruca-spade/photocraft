@@ -117,9 +117,9 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, Valu
         // Left: settings.
         ui.vertical(|ui| {
             ui.set_width(220.0);
-            ui.label(egui::RichText::new("File Settings").font(crate::theme::semibold(12.0)).color(t.text));
+            ui.label(egui::RichText::new(crate::i18n::ts("File Settings")).font(crate::theme::semibold(12.0)).color(t.text));
             ui.horizontal(|ui| {
-                ui.label(egui::RichText::new("Format").color(t.text_dim));
+                ui.label(egui::RichText::new(crate::i18n::ts("Format")).color(t.text_dim));
                 let mut fmt = s_fmt(f);
                 let opts: Vec<(String, &str)> = FORMATS.iter().map(|(k, l)| (k.to_string(), *l)).collect();
                 if crate::widgets::dropdown(ui, "export-format", &mut fmt, &opts, 130.0) {
@@ -137,10 +137,10 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, f: &mut Map<String, Valu
                 f.insert("transparency".into(), json!(tr));
             }
             ui.add_space(8.0);
-            ui.label(egui::RichText::new("Image Size").font(crate::theme::semibold(12.0)).color(t.text));
+            ui.label(egui::RichText::new(crate::i18n::ts("Image Size")).font(crate::theme::semibold(12.0)).color(t.text));
             let mut sc = n(f, "scale", 100.0) as f32;
             ui.horizontal(|ui| {
-                ui.label(egui::RichText::new("Scale").color(t.text_dim));
+                ui.label(egui::RichText::new(crate::i18n::ts("Scale")).color(t.text_dim));
                 crate::widgets::value_field(ui, &mut sc, 1.0..=1000.0, "%", 70.0);
             });
             f.insert("scale".into(), json!(sc.round()));

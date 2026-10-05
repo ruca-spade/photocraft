@@ -196,6 +196,8 @@ pub fn channel_color(name: &str, t: &Tokens) -> Color32 {
 }
 
 fn channel_picker(ui: &mut egui::Ui, id: egui::Id, label: &str) -> usize {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let mut ch: usize = ui.data(|d| d.get_temp(id)).unwrap_or(0);
     ui.horizontal(|ui| {
         let t = Tokens::get(ui.ctx());
@@ -215,7 +217,7 @@ fn channel_picker(ui: &mut egui::Ui, id: egui::Id, label: &str) -> usize {
 pub fn histogram_panel(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     let t = Tokens::get(ui.ctx());
     let Some(st) = app.session.active() else {
-        ui.label(egui::RichText::new("No document").color(t.text_faint));
+        ui.label(egui::RichText::new(crate::i18n::ts("No document")).color(t.text_faint));
         return;
     };
     let (doc_id, rev) = (st.doc.id, st.revision);

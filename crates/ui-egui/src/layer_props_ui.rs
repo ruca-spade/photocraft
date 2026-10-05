@@ -33,6 +33,8 @@ pub fn transform_params(layer: u64, b: [i32; 4], w: Option<f32>, h: Option<f32>,
 }
 
 fn section(ui: &mut egui::Ui, id: &str, title: &str) -> bool {
+    let title_tr = crate::i18n::ts(title);
+    let title = title_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let key = egui::Id::new(("layer-props-section", id));
     let mut open = ui.data(|d| d.get_temp::<bool>(key)).unwrap_or(true);
@@ -54,6 +56,8 @@ fn section(ui: &mut egui::Ui, id: &str, title: &str) -> bool {
 
 /// A number field that reports a value once committed (drag released, Enter, focus lost).
 fn field(ui: &mut egui::Ui, id: &str, label: &str, current: f32) -> Option<f32> {
+    let label_tr = crate::i18n::ts(label);
+    let label = label_tr.as_str();
     let t = Tokens::get(ui.ctx());
     let (r, _) = ui.allocate_exact_size(vec2(16.0, 22.0), Sense::hover());
     ui.painter().text(pos2(r.right() - 2.0, r.center().y), egui::Align2::RIGHT_CENTER, label, egui::FontId::proportional(12.0), t.text_dim);

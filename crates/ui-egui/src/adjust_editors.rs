@@ -169,6 +169,8 @@ fn color_button(ui: &mut egui::Ui, c: &mut [f32; 3]) -> Edit {
 }
 
 fn label(ui: &mut egui::Ui, text: &str) {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     let t = Tokens::get(ui.ctx());
     ui.label(RichText::new(text).color(t.text_dim).size(12.0));
 }
@@ -188,6 +190,8 @@ fn sliders(ui: &mut egui::Ui, v: &mut Value, rows: &[(&str, &str, f32, f32, f32,
 }
 
 fn gradient_slider(ui: &mut egui::Ui, text: &str, x: &mut f32, range: std::ops::RangeInclusive<f32>, unit: &str, from: Color32, to: Color32) -> Edit {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     let r = widgets::slider_row(ui, text, x, range, unit, Some(&[from, to]));
     Edit::of(&r)
 }
@@ -248,6 +252,8 @@ pub fn tone_channels(space: ToneSpace, gray: bool) -> &'static [ToneChannel] {
 }
 
 fn channel_picker(ui: &mut egui::Ui, id: egui::Id, chans: &[ToneChannel], text: &str) -> usize {
+    let text_tr = crate::i18n::ts(text);
+    let text = text_tr.as_str();
     let mut ch: usize = ui.data(|d| d.get_temp(id)).unwrap_or(0);
     if ch >= chans.len() {
         ch = 0;
@@ -566,7 +572,7 @@ fn curves(ui: &mut egui::Ui, v: &mut Value, cx: &EditorCx) -> Edit {
         }
     });
     let t2 = Tokens::get(ui.ctx());
-    ui.label(RichText::new("Click to add a point · drag off or ⌘/Ctrl-click or Delete to remove").color(t2.text_faint).size(11.0));
+    ui.label(RichText::new(crate::i18n::ts("Click to add a point · drag off or ⌘/Ctrl-click or Delete to remove")).color(t2.text_faint).size(11.0));
     ui.data_mut(|d| d.insert_temp(state_id, st));
     if changed {
         v[key] = json!(pts.iter().map(|q| [q[0].round(), q[1].round()]).collect::<Vec<_>>());
@@ -1316,7 +1322,7 @@ pub fn layer_editor(app: &mut PhotocraftApp, ui: &mut egui::Ui, id: LayerId, adj
         Adjustment::SelectiveColor { .. } => return crate::adjust_ui::selective_color_editor(app, ui, id, adj),
         Adjustment::ColorLookup { .. } => return crate::adjust_ui::color_lookup_editor(app, ui, id, adj),
         Adjustment::Invert => {
-            ui.label(RichText::new("Invert has no settings.").color(t.text_faint));
+            ui.label(RichText::new(crate::i18n::ts("Invert has no settings.")).color(t.text_faint));
             return;
         }
         Adjustment::Unsupported { psd_key, .. } => {

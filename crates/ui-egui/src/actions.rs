@@ -70,7 +70,7 @@ pub fn panel(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
     let mut play_idx = None;
     egui::ScrollArea::vertical().id_salt("actions-rows").max_height(max_h).auto_shrink([false, true]).show(ui, |ui| {
         if app.ui.actions.list.is_empty() {
-            ui.label(egui::RichText::new("Record ● a sequence of edits, then play ▶ it on any document.").color(t.text_faint).size(11.5));
+            ui.label(egui::RichText::new(crate::i18n::ts("Record ● a sequence of edits, then play ▶ it on any document.")).color(t.text_faint).size(11.5));
         }
         let n = app.ui.actions.list.len();
         for i in 0..n {
@@ -134,7 +134,7 @@ pub fn panel(app: &mut PhotocraftApp, ui: &mut egui::Ui) {
             ui.painter().rect_filled(r, 3.0, t.hover);
         }
         ui.painter().circle_filled(r.center(), 5.5, if recording { Color32::from_rgb(230, 60, 60) } else { t.icon });
-        if rec.on_hover_text("Begin recording").clicked() && !recording {
+        if rec.on_hover_text(crate::i18n::ts("Begin recording")).clicked() && !recording {
             start_recording(app);
         }
         if crate::icons::button(ui, "play", 24.0, false, "Play selection").clicked() {
